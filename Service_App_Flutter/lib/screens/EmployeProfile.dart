@@ -1,0 +1,824 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:service_app/Utils/Constants.dart';
+import 'package:service_app/Utils/storageUtil.dart';
+import 'package:service_app/components/Textads.dart';
+import 'package:service_app/screens/EmpProfileFragment.dart';
+import 'package:service_app/screens/EmpServiceFragment.dart';
+import 'package:service_app/screens/EmphomeFragment.dart';
+import 'package:service_app/screens/LoginScreen.dart';
+import 'package:service_app/screens/TodayTask.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:service_app/screens/mobilelogin.dart';
+
+class EmpProfileFragment extends StatefulWidget {
+  @override
+  _EmpProfileFragmentState createState() => _EmpProfileFragmentState();
+}
+
+class _EmpProfileFragmentState extends State<EmpProfileFragment> {
+  var _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  var selectedImage;
+  void _showMessageInScaffold(String message) {
+    _scaffoldKey.currentState!.showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(
+            color: Colors.white,
+          ),
+          textAlign: TextAlign.center,
+          softWrap: true,
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  // final String salt = await cryptor.generateSalt();
+  // final String key = await cryptor.generateKeyFromPassword(password, salt);
+  // final String encrypted =
+  //     await cryptor.encrypt("Password that you want to encrypt", key);
+  // final key = Key.fromUtf8('put32charactershereeeeeeeeeeeee!'); //32 chars
+  // final iv = IV.fromUtf8('put16characters!');
+  // String decryptMyData(String text) {
+  //   final e = Encrypter(AES(key, mode: AESMode.cbc));
+  //   final decrypted_data = e.decrypt(Encrypted.fromBase64(text), iv: iv);
+  //   return decrypted_data;
+  // }
+
+  FocusNode myFocusNode1 = new FocusNode();
+  FocusNode myFocusNode2 = new FocusNode();
+  FocusNode myFocusNode3 = new FocusNode();
+  FocusNode myFocusNode4 = new FocusNode();
+
+  var profile;
+  var profile1;
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phonenumberController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  profilepic() async {
+    await getTextFromFile();
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(BASE_URL + 'api_employee_image_upload'),
+    );
+    Map<String, String> headers = {
+      "Authorization": basicAuth,
+      "Content-type": "multipart/form-data"
+    };
+    request.files.add(
+      http.MultipartFile(
+          'name', _image.readAsBytes().asStream(), _image.lengthSync(),
+          filename: _image.path),
+    );
+
+    request.headers.addAll(headers);
+    request.fields.addAll({'emp_id': mobile_test1});
+    print("request: " + request.toString());
+    var res = await request.send();
+
+    var response = await http.Response.fromStream(res);
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+      if (jsonResponse['status'] == "success") {
+        print(jsonResponse['data']);
+        if (response.statusCode == 200) {
+          var jsonResponse = json.decode(response.body);
+          print(jsonResponse);
+          if (jsonResponse['status'] == "success") {
+            setState(() {
+              profile1 = jsonResponse['data'];
+
+              StorageUtil.setItem("login_employee_image",
+                  JsonEncoder().convert(profile1['profile_image']));
+            });
+          } else if (jsonResponse['status'] == 'Error') {
+            Navigator.pop(context);
+          }
+        }
+      }
+    }
+  }
+
+  String mobile_test1 = '';
+  String mobile_test2 = '';
+  String mobile_test3 = '';
+  String mobile_test4 = '';
+  String mobile_test5 = '';
+  String mobile_test6 = '';
+  String mobile_test7 = '';
+
+  getTextFromFile() async {
+    try {
+      String data1 = await StorageUtil.getItem("login_employee_id");
+      String data2 = await StorageUtil.getItem("login_employee_name");
+      String data3 = await StorageUtil.getItem("login_employee_mobil_number");
+      String data4 = await StorageUtil.getItem("login_employee_email_id");
+      String data5 = await StorageUtil.getItem("login_employee_type");
+      String data6 = await StorageUtil.getItem("login_employee_password");
+      String data7 = await StorageUtil.getItem("login_employee_image");
+      setState(() {
+        mobile_test1 = data1;
+        mobile_test2 = data2;
+        mobile_test3 = data3;
+        mobile_test4 = data4;
+        mobile_test5 = data5;
+        mobile_test6 = data6;
+        mobile_test7 = data7;
+        print("udhuh" + (mobile_test6));
+        print("udhuh" + (mobile_test5));
+      });
+    } catch (ex) {
+      print(ex);
+    }
+  }
+
+  updateprofile() async {
+    var data = json.encode({
+      "emp_id": mobile_test1,
+      "username": usernameController.text,
+      "email_id": emailController.text,
+      "mobile_number": phonenumberController.text,
+      "password": passwordController.text
+    });
+    final response = await http.post(BASE_URL + 'update_employee_profile',
+        headers: {'authorization': basicAuth}, body: data);
+    print(data);
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+      if (jsonResponse['status'] == "success") {
+        setState(() {
+          profile = jsonResponse['data'];
+          setState(() {
+            StorageUtil.setItem("login_employee_id", profile['id']);
+            StorageUtil.setItem("login_employee_name", profile['name']);
+            StorageUtil.setItem(
+                "login_employee_mobil_number", profile['mobil_number']);
+            StorageUtil.setItem("login_employee_email_id", profile['email_id']);
+            StorageUtil.setItem("login_employee_password",
+                JsonEncoder().convert(profile['password']));
+            print("hjhgghg" + JsonEncoder().convert(profile['password']));
+          });
+          emailController.text = profile['email_id'];
+          phonenumberController.text = profile['mobil_number'];
+          usernameController.text = profile['name'];
+          passwordController.text = profile['password'];
+        });
+      } else if (jsonResponse['status'] == 'Error') {
+        Navigator.pop(context);
+      }
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
+  bool username = true;
+  bool email = true;
+  bool mobileno = true;
+  bool password = true;
+  bool save = true;
+  void showWidget() {
+    setState(() {
+      username = true;
+      email = true;
+      mobileno = true;
+      save = false;
+    });
+  }
+
+  void hideWidget() {
+    setState(() {
+      username = false;
+      email = false;
+      mobileno = false;
+      save = true;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getTextFromFile().then((result) {
+      setState(() {
+        emailController.text = mobile_test4;
+        phonenumberController.text = mobile_test3;
+        usernameController.text = mobile_test2;
+        passwordController.text = mobile_test6;
+        //_image = Image.network(mobile_test7);
+        print("huhaiuh" + mobile_test7);
+      });
+    });
+  }
+
+  var _image;
+
+  Future<void> _optionsDialogBox() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Add Photo!'),
+            content: new SingleChildScrollView(
+              child: new ListBody(
+                children: <Widget>[
+                  GestureDetector(
+                      child: new Text('Take Photo'),
+                      onTap: () {
+                        opencamera();
+                        Navigator.of(context).pop();
+                      }),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                  ),
+                  GestureDetector(
+                      child: new Text('Choose from Gallery'),
+                      onTap: () {
+                        opengallery();
+                        Navigator.of(context).pop();
+                      }),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                  ),
+                  GestureDetector(
+                      child: new Text('Cancel'),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      }
+                      //   onTap: openCamera,
+                      ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  employeeLogout() async {
+    var data = json.encode({"user_id": mobile_test1, "user_type": "1"});
+    final response = await http.post(BASE_URL + 'user_log_out',
+        headers: {'authorization': basicAuth}, body: data);
+    print(data);
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+      if (jsonResponse['status'] == "true") {
+        StorageUtil.remove('login_employee_id');
+        await Future.delayed(Duration(seconds: 1));
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+            (Route<dynamic> route) => false);
+      } else if (jsonResponse['status'] == 'Error') {
+        Navigator.pop(context);
+        // _showMessageInScaffold(jsonResponse['message']);
+      }
+      //   sharedPreferences.setString("token", jsonResponse['token']);
+    } else {
+      Navigator.pop(context);
+      //    _showMessageInScaffold('Contact Admin!!');
+    }
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Are you sure want to logout?'),
+          /*       content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('We will be redirected to login page.'),
+              ],
+            ),
+          ),*/
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'No',
+                style: TextStyle(color: Color(0xff004080)),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the Dialog
+              },
+            ),
+            FlatButton(
+              child: Text(
+                'Yes',
+                style: TextStyle(color: Color(0xff004080)),
+              ),
+              onPressed: () {
+                employeeLogout();
+                //   SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                // Navigate to login
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          leadingWidth: 110,
+          centerTitle: true,
+          backgroundColor: new Color(0xff004080),
+          leading: Image.asset(
+            'assets/images/service_logo.png',
+          ),
+          title: Text(
+            'Home',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          automaticallyImplyLeading: false,
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(
+                  Icons.power_settings_new_rounded,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  _showMyDialog();
+                }),
+          ],
+          //   centerTitle: true,
+          //  automaticallyImplyLeading: false,
+        ),
+        body: SafeArea(
+            child: Stack(children: [
+          Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    image: (mobile_test7 != null)
+                        ? DecorationImage(
+                            image: NetworkImage(mobile_test7),
+                            colorFilter: new ColorFilter.mode(
+                                Colors.black.withOpacity(0.3),
+                                BlendMode.dstATop),
+                            fit: BoxFit.fill)
+                        : (_image != null)
+                            ? DecorationImage(
+                                image: FileImage(_image),
+                                colorFilter: new ColorFilter.mode(
+                                    Colors.black.withOpacity(0.3),
+                                    BlendMode.dstATop),
+                                fit: BoxFit.fill)
+                            : DecorationImage(
+                                image:
+                                    AssetImage("assets/images/profileIot.jpg"),
+                                colorFilter: new ColorFilter.mode(
+                                    Colors.black.withOpacity(0.3),
+                                    BlendMode.dstATop),
+                                fit: BoxFit.fill)),
+                child: Container(
+                  width: double.infinity,
+                  alignment: Alignment(0.0, 2.2),
+                  height: 180,
+                  child: Stack(children: <Widget>[
+                    CircleAvatar(
+                        radius: 60,
+                        backgroundColor: Colors.white,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(60),
+                          child: (mobile_test7 != null)
+                              ? Image.network(
+                                  mobile_test7,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  fit: BoxFit.cover,
+                                )
+                              : (_image != null)
+                                  ? Image.file(
+                                      _image,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.asset(
+                                      "assets/images/profileIot.png",
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      fit: BoxFit.cover,
+                                    ),
+                        )),
+                    // profile['profile_image']'
+                    Positioned(
+                      right: 2.0,
+                      bottom: 0.0,
+                      child: Container(
+                          height: 35,
+                          width: 35,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(35.0),
+                            color: Color(0xffff7000),
+                          ),
+                          child: IconButton(
+                            alignment: Alignment.center,
+                            icon: Icon(Icons.camera_alt,
+                                size: 19.0, color: Colors.white),
+                            onPressed: () {
+                              _optionsDialogBox();
+                            },
+                          )),
+                    ),
+                  ]),
+                ),
+              ),
+              SizedBox(
+                height: 40,
+              ),
+              Form(
+                  key: _formKey,
+                  child: Column(mainAxisSize: MainAxisSize.min,
+                      //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          //height: 70,
+                          padding: EdgeInsets.fromLTRB(20, 18, 20, 0),
+                          child: TextFormField(
+                            obscureText: false,
+                            focusNode: myFocusNode1,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter name';
+                              }
+                              return null;
+                            },
+                            maxLength: 10,
+                            controller: usernameController,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              counterText: "",
+                              labelText: 'Name',
+                              labelStyle: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: myFocusNode1.hasFocus
+                                      ? Colors.black54
+                                      : Colors.grey),
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                              //  hintStyle: TextStyle(color:Colors.grey),
+                              fillColor: Colors.white,
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 1),
+                              ),
+                              alignLabelWithHint: true,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 1),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.red, width: 1),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 1),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          //  height: 70,
+                          padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter email';
+                              }
+                              return null;
+                            },
+                            obscureText: false,
+                            focusNode: myFocusNode2,
+                            controller: emailController,
+                            decoration: InputDecoration(
+                              labelText: 'Email ID',
+                              labelStyle: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: myFocusNode2.hasFocus
+                                      ? Colors.black54
+                                      : Colors.grey),
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32.0),
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 1),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 1),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.red, width: 1),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 1),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          //height: 70,
+                          padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                          child: TextFormField(
+                            obscureText: false,
+                            focusNode: myFocusNode3,
+                            keyboardType: TextInputType.number,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter mobile number';
+                              } else if (value.length < 10) {
+                                return "Enter valid mobile number";
+                              }
+                              return null;
+                            },
+                            maxLength: 10,
+                            controller: phonenumberController,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              counterText: "",
+                              labelText: 'Phone No',
+
+                              labelStyle: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: myFocusNode3.hasFocus
+                                      ? Colors.black54
+                                      : Colors.grey),
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                              //  hintStyle: TextStyle(color:Colors.grey),
+                              fillColor: Colors.white,
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 1),
+                              ),
+                              alignLabelWithHint: true,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 1),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.red, width: 1),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 1),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          //height: 70,
+                          padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                          child: TextFormField(
+                            obscureText: false,
+                            focusNode: myFocusNode4,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter password';
+                              }
+                              return null;
+                            },
+                            controller: passwordController,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              counterText: "",
+                              labelText: 'Password',
+
+                              labelStyle: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: myFocusNode4.hasFocus
+                                      ? Colors.black54
+                                      : Colors.grey),
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                              //  hintStyle: TextStyle(color:Colors.grey),
+                              fillColor: Colors.white,
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 1),
+                              ),
+                              alignLabelWithHint: true,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 1),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.red, width: 1),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 1),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ])),
+              Container(
+                  height: 85,
+                  width: double.infinity,
+                  padding: EdgeInsets.fromLTRB(25, 10, 25, 20),
+                  child: RaisedButton(
+                    onPressed: () => {
+                      /*        if(usernameController.text == ""){
+                        _showMessageInScaffold("please enter name"),
+                      },
+                      if(emailController.text == ""){
+                        _showMessageInScaffold("please enter email"),
+                      },if (emailController.text.length < 10){
+                        _showMessageInScaffold("please enter valid email id"),
+                      },
+                      if(phonenumberController.text== ""){
+                        _showMessageInScaffold  ("please enter mobile number"),
+                      },
+                      if(phonenumberController.text.length < 10){
+                        _showMessageInScaffold  ("please enter valid mobile number"),
+                      },
+                      if(passwordController.text== ""){
+                        _showMessageInScaffold("please enter password"),
+                      },*/
+                      profilepic(),
+                      updateprofile(),
+                    },
+                    textColor: Colors.white,
+                    color: Color(0xffff7000),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular((32.0))),
+                    child: Text(
+                      'SAVE',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  )),
+            ],
+          ),
+          Container(
+            alignment: Alignment.bottomCenter,
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Container(
+                height: 30,
+                child: TextAds(),
+              ),
+              Container(
+                color: Colors.white,
+                alignment: Alignment.bottomCenter,
+                width: double.infinity,
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Column(children: [
+                          IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            EmpServiceFragment()));
+                              },
+                              icon: Icon(
+                                Icons.home_repair_service_outlined,
+                                color: Color(0xff004080),
+                              )),
+                          Text(
+                            'Services',
+                            style: TextStyle(
+                              color: Color(0xff004080),
+                            ),
+                          ),
+                        ]),
+                        flex: 5),
+                    Expanded(
+                        child: Column(children: [
+                          IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            TodayTask()));
+                              },
+                              icon: Icon(
+                                Icons.sticky_note_2_outlined,
+                                color: Color(0xff004080),
+                              )),
+                          Text(
+                            'Today Task',
+                            style: TextStyle(
+                              color: Color(0xff004080),
+                            ),
+                          ),
+                        ]),
+                        flex: 5),
+                    Expanded(
+                        child: Column(children: [
+                          IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            EmphomeFragment()));
+                              },
+                              icon: Icon(Icons.home_outlined,
+                                  color: Color(0xff004080))),
+                          Text(
+                            'Home',
+                            style: TextStyle(
+                              color: Color(0xff004080),
+                            ),
+                          ),
+                        ]),
+                        flex: 5),
+                    Expanded(
+                        child: Column(children: [
+                          IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            EmpProfileFragment()));
+                              },
+                              icon: Icon(
+                                Icons.person_outline,
+                                color: Color(0xffff7000),
+                              )),
+                          Text(
+                            'Profile',
+                            style: TextStyle(
+                              color: Color(0xffff7000),
+                            ),
+                          ),
+                        ]),
+                        flex: 5),
+                  ],
+                ),
+              )
+            ]),
+          )
+        ])));
+  }
+
+  void opencamera() async {
+    var image = await ImagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 50);
+    setState(() {
+      _image = image;
+    });
+  }
+
+  void opengallery() async {
+    var image = await ImagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 50);
+    setState(() {
+      _image = image;
+    });
+  }
+}

@@ -8,37 +8,39 @@ import 'package:service_app/screens/EmpServiceFragment.dart';
 import 'package:service_app/screens/EmpTodaytaskFragment.dart';
 import 'package:service_app/screens/EmphomeFragment.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:service_app/screens/EmployeProfile.dart';
+import 'package:service_app/screens/TodayTask.dart';
 
 class EmployeeBottomNavigation extends StatefulWidget {
   @override
-  _EmployeeBottomNavigationState createState() => _EmployeeBottomNavigationState();
+  _EmployeeBottomNavigationState createState() =>
+      _EmployeeBottomNavigationState();
 }
 
 class _EmployeeBottomNavigationState extends State<EmployeeBottomNavigation> {
   //PageController _pageController = PageController(initialPage: 2);
-  List<Widget> _Screens =   [
-    EmpServiceFragment(),EmpTodaytaskFragment(),EmphomeFragment(),EmpProfileFragment(),
+  List<Widget> _Screens = [
+    EmpServiceFragment(),
+    TodayTask(),
+    EmphomeFragment(),
+    EmpProfileFragment(),
   ];
   int _selectedIndex = 0;
-  void _onPageChanged(int index){
+  void _onPageChanged(int index) {
     setState(() {
       _selectedIndex = index;
       _selectedIndex = index;
     });
-
   }
-  List _pages = [
 
+  List _pages = [
     Text("Services"),
     Text("Today Task"),
     Text("Dashboard"),
     Text("Profile"),
   ];
 
-
-
- /* void onItemTapped(int selectedIndex){
+  /* void onItemTapped(int selectedIndex){
     _pageController.jumpToPage(selectedIndex);
 
 
@@ -46,37 +48,28 @@ class _EmployeeBottomNavigationState extends State<EmployeeBottomNavigation> {
   }*/
   int _currentIndex = 0;
 
-
   List images = [];
 
-
-
-
-
   customerlogout() async {
-
     var data = json.encode({"user_id": 'emp_id', "user_type": "1"});
-    final response = await http.post(BASE_URL + 'user_log_out', headers: {'authorization': basicAuth}, body: data);
+    final response = await http.post(BASE_URL + 'user_log_out',
+        headers: {'authorization': basicAuth}, body: data);
     print(data);
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       print(jsonResponse);
-      if(jsonResponse['status'] == "success"){
-
+      if (jsonResponse['status'] == "success") {
         var customer_details = jsonResponse['data'];
         //  print("customeraavo"+customer_details['id']);
-        setState(() {
-
-        });
-
+        setState(() {});
 
         //  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => CustomerDashboardScreen()), (Route<dynamic> route) => false);
-      }else if(jsonResponse['status'] == 'Error'){
+      } else if (jsonResponse['status'] == 'Error') {
         Navigator.pop(context);
         // _showMessageInScaffold(jsonResponse['message']);
       }
       //   sharedPreferences.setString("token", jsonResponse['token']);
-    }else {
+    } else {
       Navigator.pop(context);
       //    _showMessageInScaffold('Contact Admin!!');
     }
@@ -98,13 +91,19 @@ class _EmployeeBottomNavigationState extends State<EmployeeBottomNavigation> {
           ),*/
           actions: <Widget>[
             FlatButton(
-              child: Text('No',style: TextStyle(color:Color(0xff004080)),),
+              child: Text(
+                'No',
+                style: TextStyle(color: Color(0xff004080)),
+              ),
               onPressed: () {
                 Navigator.of(context).pop(); // Dismiss the Dialog
               },
             ),
             FlatButton(
-              child: Text('Yes',style: TextStyle(color:Color(0xff004080)),),
+              child: Text(
+                'Yes',
+                style: TextStyle(color: Color(0xff004080)),
+              ),
               onPressed: () {
                 //   SystemChannels.platform.invokeMethod('SystemNavigator.pop');
                 Navigator.of(context).pop(); // Navigate to login
@@ -115,6 +114,7 @@ class _EmployeeBottomNavigationState extends State<EmployeeBottomNavigation> {
       },
     );
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -122,68 +122,75 @@ class _EmployeeBottomNavigationState extends State<EmployeeBottomNavigation> {
 
     //_pageController;
     customerlogout();
-
   }
+
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-
       //  onTap: onItemTapped,
-        //_currentIndex = _currentIndex;
+      //_currentIndex = _currentIndex;
 
-        //  onTap: ,
-       // currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
-        // this will be set when a new tab is tapped
-        items: [
-          BottomNavigationBarItem(
-
-            backgroundColor: new Color(0xff004080),
-            icon:   new Icon(Icons.perm_phone_msg_outlined,
-              color:   _selectedIndex == 0 ? Color(0xffff7000):Color(0xff004080),
-            ),
-
-            title: new Text('Services',
-              style: TextStyle(
-                color: _selectedIndex == 0 ? Color(0xffff7000):Color(0xff004080),
-
-              ),
+      //  onTap: ,
+      // currentIndex: _currentIndex,
+      type: BottomNavigationBarType.fixed,
+      // this will be set when a new tab is tapped
+      items: [
+        BottomNavigationBarItem(
+          backgroundColor: new Color(0xff004080),
+          icon: new Icon(
+            Icons.perm_phone_msg_outlined,
+            color: _selectedIndex == 0 ? Color(0xffff7000) : Color(0xff004080),
+          ),
+          title: new Text(
+            'Services',
+            style: TextStyle(
+              color:
+                  _selectedIndex == 0 ? Color(0xffff7000) : Color(0xff004080),
             ),
           ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage('assets/images/paidservice.png'),
-              // color: Color(0xFF3A5A98),
+        ),
+        BottomNavigationBarItem(
+          icon: ImageIcon(
+            AssetImage('assets/images/paidservice.png'),
+            // color: Color(0xFF3A5A98),
 
-              color: _selectedIndex == 1 ? Color(0xffff7000):Color(0xff004080),
-            ),
-
-            title: new Text('Today Task',
-              style: TextStyle(
-                color: _selectedIndex == 1 ? Color(0xffff7000):Color(0xff004080),
-              ),),
+            color: _selectedIndex == 1 ? Color(0xffff7000) : Color(0xff004080),
           ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.home_outlined,
-              color: _selectedIndex == 2 ? Color(0xffff7000):Color(0xff004080),
+          title: new Text(
+            'Today Task',
+            style: TextStyle(
+              color:
+                  _selectedIndex == 1 ? Color(0xffff7000) : Color(0xff004080),
             ),
-            title: new Text('Home',
-              style: TextStyle(
-                color:_selectedIndex == 2 ? Color(0xffff7000):Color(0xff004080),
-              ),),
           ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.person_outline,
-              color: _selectedIndex == 3 ? Color(0xffff7000):Color(0xff004080),
+        ),
+        BottomNavigationBarItem(
+          icon: new Icon(
+            Icons.home_outlined,
+            color: _selectedIndex == 2 ? Color(0xffff7000) : Color(0xff004080),
+          ),
+          title: new Text(
+            'Home',
+            style: TextStyle(
+              color:
+                  _selectedIndex == 2 ? Color(0xffff7000) : Color(0xff004080),
             ),
-            title: new Text('Profile',
-              style: TextStyle(
-                color: _selectedIndex == 3 ? Color(0xffff7000):Color(0xff004080),
-              ),),
           ),
-
-        ],
-      );
-
+        ),
+        BottomNavigationBarItem(
+          icon: new Icon(
+            Icons.person_outline,
+            color: _selectedIndex == 3 ? Color(0xffff7000) : Color(0xff004080),
+          ),
+          title: new Text(
+            'Profile',
+            style: TextStyle(
+              color:
+                  _selectedIndex == 3 ? Color(0xffff7000) : Color(0xff004080),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

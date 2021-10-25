@@ -12,40 +12,47 @@ import 'package:service_app/screens/EmpServiceFragment.dart';
 import 'package:service_app/screens/EmpTodaytaskFragment.dart';
 import 'package:service_app/screens/EmphomeFragment.dart';
 import 'package:http/http.dart' as http;
+import 'package:service_app/screens/EmployeProfile.dart';
 import 'package:service_app/screens/LoginScreen.dart';
-
+import 'package:service_app/screens/TodayTask.dart';
+import 'package:service_app/screens/mobilelogin.dart';
 
 class EmployeeDashboardScreen extends StatefulWidget {
   @override
-  _EmployeeDashboardScreenState createState() => _EmployeeDashboardScreenState();
+  _EmployeeDashboardScreenState createState() =>
+      _EmployeeDashboardScreenState();
 }
 
 class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
   PageController _pageController = PageController(initialPage: 2);
-  List<Widget> _Screens =   [
-    EmpServiceFragment(),EmpTodaytaskFragment(),EmphomeFragment(),EmpProfileFragment(),
+  List<Widget> _Screens = [
+    EmpServiceFragment(),
+    TodayTask(),
+    EmphomeFragment(),
+    EmpProfileFragment(),
   ];
   int _selectedIndex = 0;
-  void _onPageChanged(int index){
+  void _onPageChanged(int index) {
     setState(() {
       _selectedIndex = index;
       _selectedIndex = index;
     });
   }
-  List _pages = [
 
+  List _pages = [
     Text("Services"),
     Text("Today Task"),
     Text("Dashboard"),
     Text("Profile"),
   ];
 
-  void onItemTapped(int selectedIndex){
+  void onItemTapped(int selectedIndex) {
     _pageController.jumpToPage(selectedIndex);
   }
+
   int _currentIndex = 0;
   List images = [];
-  Swiper imageSlider(context){
+  Swiper imageSlider(context) {
     return new Swiper(
       autoplay: true,
       itemBuilder: (BuildContext context, int index) {
@@ -55,20 +62,21 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
       viewportFraction: 0.8,
       scale: 0.9,
       layout: SwiperLayout.DEFAULT,
-
     );
   }
+
   adsapi() async {
     String basicAuth = "Basic YWRtaW46MTIzNA==";
     //   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     //var data = json.encode({"name":usernameController.text,"mobile_number":phonenumberController.text,"email_id":emailController.text,"password":passwordController.text});
-    final response = await http.get(BASE_URL+'get_adverstisment_details', headers: {'authorization': basicAuth});
+    final response = await http.get(BASE_URL + 'get_adverstisment_details',
+        headers: {'authorization': basicAuth});
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       print(jsonResponse);
-      if(jsonResponse['status'] == "success"){
+      if (jsonResponse['status'] == "success") {
         setState(() {
-          images =jsonResponse['data'][0]['ads_details'];
+          images = jsonResponse['data'][0]['ads_details'];
         });
         print(images);
         //  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => CustomerDashboardScreen()), (Route<dynamic> route) => false);
@@ -76,26 +84,29 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
       //   sharedPreferences.setString("token", jsonResponse['token']);
     }
   }
-  customerlogout() async {
 
+  customerlogout() async {
     var data = json.encode({"user_id": 'emp_id', "user_type": "1"});
-    final response = await http.post(BASE_URL + 'user_log_out', headers: {'authorization': basicAuth}, body: data);
+    final response = await http.post(BASE_URL + 'user_log_out',
+        headers: {'authorization': basicAuth}, body: data);
     print(data);
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       print(jsonResponse);
-      if(jsonResponse['status'] == "true"){
+      if (jsonResponse['status'] == "true") {
         StorageUtil.remove('login_employee_id');
         await Future.delayed(Duration(seconds: 1));
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => LoginScreen()), (Route<dynamic> route) => false);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+            (Route<dynamic> route) => false);
 
         //  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => CustomerDashboardScreen()), (Route<dynamic> route) => false);
-      }else if(jsonResponse['status'] == 'Error'){
+      } else if (jsonResponse['status'] == 'Error') {
         Navigator.pop(context);
         // _showMessageInScaffold(jsonResponse['message']);
       }
       //   sharedPreferences.setString("token", jsonResponse['token']);
-    }else {
+    } else {
       Navigator.pop(context);
       //    _showMessageInScaffold('Contact Admin!!');
     }
@@ -117,17 +128,23 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
           ),*/
           actions: <Widget>[
             FlatButton(
-              child: Text('No',style: TextStyle(color:Color(0xff004080)),),
+              child: Text(
+                'No',
+                style: TextStyle(color: Color(0xff004080)),
+              ),
               onPressed: () {
                 Navigator.of(context).pop(); // Dismiss the Dialog
               },
             ),
             FlatButton(
-              child: Text('Yes',style: TextStyle(color:Color(0xff004080)),),
+              child: Text(
+                'Yes',
+                style: TextStyle(color: Color(0xff004080)),
+              ),
               onPressed: () {
                 customerlogout();
                 //   SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-               // Navigator.of(context).pop(); // Navigate to login
+                // Navigator.of(context).pop(); // Navigate to login
               },
             ),
           ],
@@ -135,6 +152,7 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
       },
     );
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -142,116 +160,138 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
     _selectedIndex = 2;
     _pageController;
     adsapi();
-   // customerlogout();
-
+    // customerlogout();
   }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
-      bool willLeave = false;
-      // show the confirm dialog
-      await showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-        title: Text('Are you sure want to leave?'),
-        actions: [
-          ElevatedButton(
-              onPressed: () {
-                willLeave = false;
-                SystemNavigator.pop();              },
-              child: Text('Yes')),
-          TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('No'))
-        ],
-      ));
-    return willLeave;
-    },
-     child: Scaffold(
-      resizeToAvoidBottomInset : false,
-      // appBar: AppBar(
-      //   leadingWidth: 110,
-      //   centerTitle: true,
-      //   backgroundColor: new Color(0xff004080),
-      //   leading: Image.asset('assets/images/service_logo.png'),
-      //   title: _pages[_selectedIndex],
-      //   automaticallyImplyLeading: false,
-      //   actions: <Widget>[
-      //     IconButton(icon: Icon(Icons.power_settings_new_rounded, color: Colors.white,), onPressed: () {_showMyDialog();}),
-      //   ],
-      // ),
+          bool willLeave = false;
+          // show the confirm dialog
+          await showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                    title: Text('Are you sure want to leave?'),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            willLeave = false;
+                            SystemNavigator.pop();
+                          },
+                          child: Text('Yes')),
+                      TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text('No'))
+                    ],
+                  ));
+          return willLeave;
+        },
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          // appBar: AppBar(
+          //   leadingWidth: 110,
+          //   centerTitle: true,
+          //   backgroundColor: new Color(0xff004080),
+          //   leading: Image.asset('assets/images/service_logo.png'),
+          //   title: _pages[_selectedIndex],
+          //   automaticallyImplyLeading: false,
+          //   actions: <Widget>[
+          //     IconButton(icon: Icon(Icons.power_settings_new_rounded, color: Colors.white,), onPressed: () {_showMyDialog();}),
+          //   ],
+          // ),
 
-      body: Container(
-        child: Container(
-            height: MediaQuery.of(context).size.height,
-            child:Column(
-                children:[
-                  Expanded(child:  PageView(
+          body: Container(
+            child: Container(
+                height: MediaQuery.of(context).size.height,
+                child: Column(children: [
+                  Expanded(
+                      child: PageView(
                     controller: _pageController,
                     //  children:
-                    children:
-                    _Screens,
+                    children: _Screens,
                     onPageChanged: _onPageChanged,
                     physics: NeverScrollableScrollPhysics(),
                   ))
-                ] )),),
+                ])),
+          ),
 
+          bottomNavigationBar: BottomNavigationBar(
+            onTap: onItemTapped,
+            //_currentIndex = _currentIndex;
 
-      bottomNavigationBar: BottomNavigationBar(
-
-        onTap: onItemTapped,
-        //_currentIndex = _currentIndex;
-
-        //  onTap: ,
-        currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
-        // this will be set when a new tab is tapped
-        items: [
-          BottomNavigationBarItem(
-            backgroundColor: new Color(0xff004080),
-            icon:   new Icon(Icons.home_repair_service_outlined,
-              color:   _selectedIndex == 0 ? Color(0xffff7000):Color(0xff004080),
-            ),
-
-            title: new Text('Services',
-              style: TextStyle(
-                color: _selectedIndex == 0 ? Color(0xffff7000):Color(0xff004080),
-
+            //  onTap: ,
+            currentIndex: _currentIndex,
+            type: BottomNavigationBarType.fixed,
+            // this will be set when a new tab is tapped
+            items: [
+              BottomNavigationBarItem(
+                backgroundColor: new Color(0xff004080),
+                icon: new Icon(
+                  Icons.home_repair_service_outlined,
+                  color: _selectedIndex == 0
+                      ? Color(0xffff7000)
+                      : Color(0xff004080),
+                ),
+                title: new Text(
+                  'Services',
+                  style: TextStyle(
+                    color: _selectedIndex == 0
+                        ? Color(0xffff7000)
+                        : Color(0xff004080),
+                  ),
+                ),
               ),
-            ),
+              BottomNavigationBarItem(
+                icon: new Icon(
+                  Icons.sticky_note_2_outlined,
+                  color: _selectedIndex == 1
+                      ? Color(0xffff7000)
+                      : Color(0xff004080),
+                ),
+                title: new Text(
+                  'Today Task',
+                  style: TextStyle(
+                    color: _selectedIndex == 1
+                        ? Color(0xffff7000)
+                        : Color(0xff004080),
+                  ),
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: new Icon(
+                  Icons.home_outlined,
+                  color: _selectedIndex == 2
+                      ? Color(0xffff7000)
+                      : Color(0xff004080),
+                ),
+                title: new Text(
+                  'Home',
+                  style: TextStyle(
+                    color: _selectedIndex == 2
+                        ? Color(0xffff7000)
+                        : Color(0xff004080),
+                  ),
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: new Icon(
+                  Icons.person_outline,
+                  color: _selectedIndex == 3
+                      ? Color(0xffff7000)
+                      : Color(0xff004080),
+                ),
+                title: new Text(
+                  'Profile',
+                  style: TextStyle(
+                    color: _selectedIndex == 3
+                        ? Color(0xffff7000)
+                        : Color(0xff004080),
+                  ),
+                ),
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.sticky_note_2_outlined,
-              color: _selectedIndex == 1 ? Color(0xffff7000):Color(0xff004080),
-            ),
-
-            title: new Text('Today Task',
-              style: TextStyle(
-                color: _selectedIndex == 1 ? Color(0xffff7000):Color(0xff004080),
-              ),),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.home_outlined,
-              color: _selectedIndex == 2 ? Color(0xffff7000):Color(0xff004080),
-            ),
-            title: new Text('Home',
-              style: TextStyle(
-                color:_selectedIndex == 2 ? Color(0xffff7000):Color(0xff004080),
-              ),),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.person_outline,
-              color: _selectedIndex == 3 ? Color(0xffff7000):Color(0xff004080),
-            ),
-            title: new Text('Profile',
-              style: TextStyle(
-                color: _selectedIndex == 3 ? Color(0xffff7000):Color(0xff004080),
-              ),),
-          ),
-
-        ],
-      ),
-    ));
+        ));
   }
 }

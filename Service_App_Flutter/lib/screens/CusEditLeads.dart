@@ -1,50 +1,44 @@
+// ignore: file_names
 import 'dart:convert';
-import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:marquee/marquee.dart';
 import 'package:service_app/Utils/Constants.dart';
+import 'package:http/http.dart' as http;
 import 'package:service_app/Utils/storageUtil.dart';
 import 'package:service_app/components/Textads.dart';
 import 'package:service_app/screens/CusHomeFragment.dart';
+import 'package:service_app/screens/CusLeadsFragment.dart';
 import 'package:service_app/screens/CusProfileFragment.dart';
 import 'package:service_app/screens/CusServiceFragment.dart';
 import 'package:service_app/screens/CusYoutubeFragment.dart';
 import 'package:service_app/screens/CustomerProfile.dart';
-import 'package:service_app/screens/LoaderScreen.dart';
 import 'package:service_app/screens/LoginScreen.dart';
 import 'package:service_app/screens/mobilelogin.dart';
 
-import 'CusLeadsFragment.dart';
-
-class AddLeadsScreen extends StatefulWidget {
+class CusEditLeads extends StatefulWidget {
   @override
-  _AddLeadsScreenState createState() => _AddLeadsScreenState();
+  final leads_list;
+  CusEditLeads(this.leads_list);
+  _CusEditLeadsState createState() => _CusEditLeadsState(this.leads_list);
 }
 
-class _AddLeadsScreenState extends State<AddLeadsScreen> {
+class _CusEditLeadsState extends State<CusEditLeads> {
+  final leads_list;
+  _CusEditLeadsState(this.leads_list);
   int _selectedIndex = 0;
-  // bool get wantKeepAlive => true;
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController contact1controller = TextEditingController();
   TextEditingController contact2controller = TextEditingController();
   TextEditingController descriptioncontroller = TextEditingController();
-  List leads_list = [];
-  List category_list = [];
-  var id = '',
-      customer_id = '',
-      status = '',
-      inv_no = '',
-      attendant = '',
-      created_date = '',
-      work_performed = '',
-      description = '',
-      img_path = ' ';
-  String selected_category = "";
 
+  String imagename = '';
   String mobile_test6 = '';
+  String selected_category = "";
 
   getTextFromFile() async {
     try {
@@ -68,7 +62,7 @@ class _AddLeadsScreenState extends State<AddLeadsScreen> {
         setState(() {
           category_list = jsonResponse['category'];
           // category_image
-          print(category_list);
+          //  print(category_list);
         });
       } else if (jsonResponse['status'] == 'Error') {
         Navigator.pop(context);
@@ -76,48 +70,6 @@ class _AddLeadsScreenState extends State<AddLeadsScreen> {
       //   sharedPreferences.setString("token", jsonResponse['token']);
     } else {
       Navigator.pop(context);
-    }
-  }
-
-  var currentDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
-  leadsadd() async {
-    await getTextFromFile();
-    final isValid = _formKey.currentState!.validate();
-    if (!isValid) {
-      return;
-    }
-    if (contact1controller.text == "") {
-      _showMessageInScaffold("Please enter mobile number");
-    } else if (descriptioncontroller.text == "") {
-      _showMessageInScaffold("Please enter mobile number");
-    }
-
-    var data = json.encode({
-      "customer_id": mobile_test6,
-      "cat_id": selected_category,
-      "contact_1": contact1controller.text,
-      "contact_2": contact2controller.text,
-      "description": descriptioncontroller.text,
-      "followup_date": currentDate
-    });
-
-    final response = await http.post(BASE_URL + 'add_leads',
-        headers: {'authorization': basicAuth}, body: data);
-    print(data);
-    if (response.statusCode == 200) {
-      var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
-      if (jsonResponse['status'] == "success") {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-              builder: (BuildContext context) => CusLeadsFragment()),
-        );
-      } else if (jsonResponse['status'] == 'Error') {
-        _showMessageInScaffold(jsonResponse['message']);
-      }
-    } else {
-      // Navigator.pop(context);
-      _showMessageInScaffold('Contact Admin!!');
     }
   }
 
@@ -135,6 +87,16 @@ class _AddLeadsScreenState extends State<AddLeadsScreen> {
         behavior: SnackBarBehavior.floating,
       ),
     );
+  }
+
+  List category_list = [];
+
+  String convertDateTimeDisplay(String date) {
+    final DateFormat displayFormater = DateFormat('yyyy-MM-dd');
+    final DateFormat serverFormater = DateFormat('dd/MM/yyyy');
+    final DateTime displayDate = displayFormater.parse(date);
+    final String formatted = serverFormater.format(displayDate);
+    return formatted;
   }
 
   customerlogout() async {
@@ -159,6 +121,50 @@ class _AddLeadsScreenState extends State<AddLeadsScreen> {
     } else {
       Navigator.pop(context);
       //    _showMessageInScaffold('Contact Admin!!');
+    }
+  }
+
+  leadsUpdate() async {
+    await getTextFromFile();
+    final isValid = _formKey.currentState!.validate();
+    if (!isValid) {
+      return;
+    }
+    if (contact1controller.text == "") {
+      _showMessageInScaffold("Please enter mobile number");
+    } else if (descriptioncontroller.text == "") {
+      _showMessageInScaffold("Please enter description");
+    }
+
+    var currentDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
+
+    var data = json.encode({
+      "customer_id": mobile_test6,
+      "cat_id": selected_category,
+      "contact_1": contact1controller.text,
+      "contact_2": contact2controller.text,
+      "description": descriptioncontroller.text,
+      "followup_date": currentDate,
+      "leads_id": leads_list['id']
+    });
+
+    final response = await http.post(BASE_URL + 'edit_leads',
+        headers: {'authorization': basicAuth}, body: data);
+    print("shfyab" + data);
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+      if (jsonResponse['status'] == "success") {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+              builder: (BuildContext context) => CusLeadsFragment()),
+        );
+      } else if (jsonResponse['status'] == 'Error') {
+        _showMessageInScaffold(jsonResponse['message']);
+      }
+    } else {
+      // Navigator.pop(context);
+      _showMessageInScaffold('Contact Admin!!');
     }
   }
 
@@ -207,9 +213,13 @@ class _AddLeadsScreenState extends State<AddLeadsScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getTextFromFile();
     category();
-    // leadsadd();
+    setState(() {
+      contact1controller.text = leads_list['contact_number'];
+      contact2controller.text = leads_list['contact_number_2'];
+      descriptioncontroller.text = leads_list['enquiry_about'];
+      selected_category = leads_list['cat_id'];
+    });
   }
 
   @override
@@ -258,7 +268,7 @@ class _AddLeadsScreenState extends State<AddLeadsScreen> {
                         padding: EdgeInsets.only(top: 10.0),
                         alignment: Alignment.center,
                         child: Text(
-                          'Add Leads',
+                          'Edit Leads',
                           style: TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
                         ),
@@ -278,12 +288,20 @@ class _AddLeadsScreenState extends State<AddLeadsScreen> {
                 ),
                 SizedBox(height: 20.0),
                 Padding(
-                  padding: EdgeInsets.only(right: 20.0),
+                  padding: EdgeInsets.only(left: 1.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
+                      Text(leads_list['enquiry_no'],
+                          style: TextStyle(
+                              fontFamily: 'Montserrat',
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15.0)),
                       SizedBox(width: 10.0),
-                      Text(currentDate,
+                      Text(
+                          convertDateTimeDisplay(
+                              '${leads_list['created_date']}'),
                           style: TextStyle(
                               fontFamily: 'Montserrat',
                               color: Colors.white,
@@ -385,107 +403,122 @@ class _AddLeadsScreenState extends State<AddLeadsScreen> {
                                 child: Column(children: [
                                   Container(
                                       padding: EdgeInsets.all(10.0),
-                                      child: Row(children: [
-                                        Expanded(
-                                            child: Container(
-                                                padding: EdgeInsets.only(
-                                                  right: 10.0,
-                                                ),
-                                                // alignment: Alignment.centerRight,
-                                                child: TextFormField(
-                                                  validator: (value) {
-                                                    if (value!.isEmpty) {
-                                                      return 'Please enter mobile number';
-                                                    } else if (value.length <
-                                                        10) {
-                                                      return "Enter valid mobile number";
-                                                    }
-                                                    return null;
-                                                  },
-                                                  // keyboardType: TextInputType.phone,
-                                                  keyboardType:
-                                                      TextInputType.number,
-                                                  inputFormatters: <
-                                                      TextInputFormatter>[
-                                                    FilteringTextInputFormatter
-                                                        .digitsOnly
-                                                  ],
-                                                  controller:
-                                                      contact1controller,
-                                                  maxLength: 10,
-                                                  decoration: InputDecoration(
-                                                    counterText: "",
-                                                    contentPadding:
-                                                        EdgeInsets.fromLTRB(
-                                                            20.0,
-                                                            10.0,
-                                                            0.0,
-                                                            10.0),
-                                                    border: OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                    10.0)),
-                                                    focusedBorder:
-                                                        OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10.0)),
-                                                      borderSide: BorderSide(
-                                                          color:
-                                                              Color(0xff004080),
-                                                          width: 2),
+                                      child: Row(
+                                          //  mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            Expanded(
+                                                child: Container(
+                                                    padding: EdgeInsets.only(
+                                                      right: 10.0,
                                                     ),
-                                                  ),
-                                                )),
-                                            flex: 2),
-                                        Expanded(
-                                            child: Container(
-                                                padding: EdgeInsets.only(
-                                                  left: 10.0,
-                                                ),
-                                                // alignment: Alignment.centerRight,
-                                                child: TextFormField(
-                                                  keyboardType:
-                                                      TextInputType.number,
-                                                  inputFormatters: <
-                                                      TextInputFormatter>[
-                                                    FilteringTextInputFormatter
-                                                        .digitsOnly
-                                                  ],
-                                                  controller:
-                                                      contact2controller,
-                                                  maxLengthEnforced: true,
-                                                  maxLength: 10,
-                                                  decoration: InputDecoration(
-                                                    counterText: "",
-                                                    contentPadding:
-                                                        EdgeInsets.fromLTRB(
-                                                            20.0,
-                                                            10.0,
-                                                            0.0,
-                                                            10.0),
-                                                    border: OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                    10.0)),
-                                                    focusedBorder:
-                                                        OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10.0)),
-                                                      borderSide: BorderSide(
-                                                          color:
-                                                              Color(0xff004080),
-                                                          width: 2),
+                                                    // alignment: Alignment.centerRight,
+                                                    child: TextFormField(
+                                                      controller:
+                                                          contact1controller,
+                                                      validator: (value) {
+                                                        if (value!.isEmpty) {
+                                                          return 'Please enter mobile number';
+                                                        } else if (value
+                                                                .length <
+                                                            10) {
+                                                          return "Enter valid mobile number";
+                                                        }
+                                                        return null;
+                                                      },
+                                                      // keyboardType: TextInputType.phone,
+                                                      keyboardType:
+                                                          TextInputType.number,
+                                                      inputFormatters: <
+                                                          TextInputFormatter>[
+                                                        FilteringTextInputFormatter
+                                                            .digitsOnly
+                                                      ],
+                                                      maxLength: 10,
+                                                      decoration:
+                                                          InputDecoration(
+                                                        counterText: "",
+                                                        //hintText: leads_list['contact_number'],
+                                                        contentPadding:
+                                                            EdgeInsets.fromLTRB(
+                                                                20.0,
+                                                                10.0,
+                                                                0.0,
+                                                                10.0),
+
+                                                        border: OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0)),
+                                                        focusedBorder:
+                                                            OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10.0)),
+                                                          borderSide: BorderSide(
+                                                              color: Color(
+                                                                  0xff004080),
+                                                              width: 2),
+                                                        ),
+                                                      ),
+                                                    )),
+                                                flex: 2),
+                                            Expanded(
+                                                child: Container(
+                                                    padding: EdgeInsets.only(
+                                                      left: 10.0,
                                                     ),
-                                                  ),
-                                                )),
-                                            flex: 2),
-                                      ])),
+                                                    // alignment: Alignment.centerRight,
+                                                    child: TextFormField(
+                                                      controller:
+                                                          contact2controller,
+                                                      keyboardType:
+                                                          TextInputType.number,
+                                                      inputFormatters: <
+                                                          TextInputFormatter>[
+                                                        FilteringTextInputFormatter
+                                                            .digitsOnly
+                                                      ],
+                                                      maxLength: 10,
+                                                      decoration:
+                                                          InputDecoration(
+                                                        counterText: "",
+                                                        // hintText: leads_list['contact_number_2'],
+                                                        contentPadding:
+                                                            EdgeInsets.fromLTRB(
+                                                                20.0,
+                                                                10.0,
+                                                                0.0,
+                                                                10.0),
+
+                                                        border: OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0)),
+                                                        focusedBorder:
+                                                            OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10.0)),
+                                                          borderSide: BorderSide(
+                                                              color: Color(
+                                                                  0xff004080),
+                                                              width: 2),
+                                                        ),
+                                                      ),
+                                                    )),
+                                                flex: 2),
+                                          ])
+                                      /*  Expanded(child:
+
+            imageSlider(context),flex: 2,),*/
+
+                                      ),
                                   Container(
                                       padding: EdgeInsets.all(10.0),
                                       alignment: Alignment.center,
@@ -518,14 +551,13 @@ class _AddLeadsScreenState extends State<AddLeadsScreen> {
                                           return null;
                                         },
                                         textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                            fontSize: 20.0,
-                                            color: Colors.black38),
+                                        //  style: TextStyle(fontSize: 20.0,color: Colors.black38),
                                         keyboardType: TextInputType.multiline,
                                         maxLength: null,
-                                        maxLines: 5,
                                         controller: descriptioncontroller,
+                                        maxLines: 5,
                                         decoration: InputDecoration(
+                                          // hintText: leads_list['enquiry_about'],
                                           contentPadding: EdgeInsets.fromLTRB(
                                               10.0, 8.0, 10.0, 8.0),
                                           border: OutlineInputBorder(
@@ -541,8 +573,53 @@ class _AddLeadsScreenState extends State<AddLeadsScreen> {
                                         ),
                                       )),
                                 ])),
+                            Container(
+                                padding: EdgeInsets.all(8.0),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.only(
+                                            bottom: 5.0, right: 5.0),
+                                        alignment: Alignment.topLeft,
+                                        child: Text(
+                                          'Status :',
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.only(left: 20.0),
+                                        alignment: Alignment.topLeft,
+                                        child: Text(
+                                            '${(leads_list['status'].toString() == "leads") ? "Leads" : (leads_list['status'].toString() == "order_conform") ? "Order Confirm" : (leads_list['status'].toString() == "leads_follow_up") ? "Leads Follow Up" : (leads_list['status'].toString() == "quotation") ? "Quotation" : (leads_list['status'].toString() == "quotation_follow_up") ? "Quotation Follow Up" : (leads_list['status'].toString() == "leads_rejected") ? "Leads Rejected" : (leads_list['status'].toString() == "quotation_rejected") ? "Quotation Rejected" : "--"}',
+                                            style: TextStyle(
+                                                color: (leads_list['status']
+                                                                .toString() ==
+                                                            "leads" ||
+                                                        leads_list['status']
+                                                                .toString() ==
+                                                            "leads_follow_up" ||
+                                                        leads_list['status']
+                                                                .toString() ==
+                                                            "quotation_follow_up" ||
+                                                        leads_list['status']
+                                                                .toString() ==
+                                                            "quotation")
+                                                    ? Colors.orange
+                                                    : (leads_list['status']
+                                                                .toString() ==
+                                                            "order_conform")
+                                                        ? Colors.green
+                                                        : Colors.red,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                    ])),
                           ]))),
-
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -571,7 +648,7 @@ class _AddLeadsScreenState extends State<AddLeadsScreen> {
                               alignment: Alignment.centerRight,
                               child: RaisedButton(
                                 onPressed: () => {
-                                  leadsadd(),
+                                  leadsUpdate(),
                                   if (selected_category == "")
                                     {
                                       _showMessageInScaffold(
@@ -584,14 +661,14 @@ class _AddLeadsScreenState extends State<AddLeadsScreen> {
                                     borderRadius:
                                         BorderRadius.circular((32.0))),
                                 child: Text(
-                                  'SUBMIT',
+                                  'UPDATE',
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),
-                          ])
+                          ]),
                       /*  Expanded(child:
 
             imageSlider(context),flex: 2,),*/
@@ -832,6 +909,10 @@ class _AddLeadsScreenState extends State<AddLeadsScreen> {
             child: Align(
               alignment: Alignment.topCenter,
               child: Stack(children: <Widget>[
+                // CircleAvatar(
+                //     radius: 37,
+                //     backgroundColor: Colors.transparent,
+                //     backgroundImage:
                 //         NetworkImage('${category_list['category_image']}')),
                 Container(
                   height: 98,
@@ -872,19 +953,14 @@ class _AddLeadsScreenState extends State<AddLeadsScreen> {
                       right: -1.0,
                       bottom: 0.0,
                       child: Container(
-                        // height: 28,
                         alignment: Alignment.bottomRight,
-
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30)),
                         //  height: 35,
                         //    width:35,
 
                         child: Icon(
                           Icons.check_circle,
                           color: Color(0xff004080),
-                          size: 28.0,
+                          size: 20.0,
                         ),
                       )),
                 ),
@@ -897,16 +973,26 @@ class _AddLeadsScreenState extends State<AddLeadsScreen> {
             padding: EdgeInsets.only(
               top: 5.0,
             ),
-            child: GestureDetector(
-                onTap: () {},
-                child: Text(
-                  '${category_list['categoryName']}',
-                  maxLines: 1,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Color(0xffff7000), fontWeight: FontWeight.bold),
-                ))),
+            child: Text('${category_list['categoryName']}',
+                maxLines: 1, textAlign: TextAlign.center)),
       ]),
     );
+  }
+
+  Widget Tickmarker() {
+    return Positioned(
+        right: -1.0,
+        bottom: 0.0,
+        child: Container(
+          alignment: Alignment.bottomRight,
+          //  height: 35,
+          //    width:35,
+
+          child: Icon(
+            Icons.check_circle,
+            color: Color(0xff004080),
+            size: 20.0,
+          ),
+        ));
   }
 }

@@ -7,13 +7,16 @@ import 'package:service_app/Utils/Constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:service_app/Utils/storageUtil.dart';
 import 'package:service_app/components/Textads.dart';
+import 'package:service_app/components/adsimages.dart';
 import 'package:service_app/screens/CusHomeFragment.dart';
 import 'package:service_app/screens/CusLeadsFragment.dart';
 import 'package:service_app/screens/CusProfileFragment.dart';
 import 'package:service_app/screens/CusServiceFragment.dart';
 import 'package:service_app/screens/CusYoutubeFragment.dart';
+import 'package:service_app/screens/CustomerProfile.dart';
 import 'package:service_app/screens/LoginScreen.dart';
 import 'package:flutter/foundation.dart';
+import 'package:service_app/screens/mobilelogin.dart';
 // import 'package:path/path.dart';
 
 class AddServiceScreen extends StatefulWidget {
@@ -138,7 +141,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
         StorageUtil.remove('login_customer_id');
         await Future.delayed(Duration(seconds: 1));
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (BuildContext context) => LoginScreen()),
+            MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
             (Route<dynamic> route) => false);
       } else if (jsonResponse['status'] == 'Error') {
         Navigator.pop(context);
@@ -228,11 +231,6 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
               leadingWidth: 110,
               centerTitle: true,
               backgroundColor: new Color(0xff004080),
-              /*   leading: new IconButton(
-            alignment: Alignment.topLeft,
-            icon: new Icon(Icons.arrow_back),
-            onPressed: (){Navigator.pop(context,true);}
-        ),*/
               leading: Image.asset('assets/images/service_logo.png'),
               title: Text('Add Service'),
               automaticallyImplyLeading: false,
@@ -256,11 +254,29 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                   child: ListView(children: [
                     Container(
                       padding:
-                          EdgeInsets.only(top: 5.0, right: 10.0, bottom: 10.0),
+                          EdgeInsets.only(right: 12.0, bottom: 10.0, top: 10.0),
                       alignment: Alignment.centerRight,
-                      child: Text(currentDate),
+                      child: Text(
+                        currentDate,
+                        style: TextStyle(
+                            color: Color(0xffff7000),
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15.0,
                     ),
                     Container(
+                      height: 140,
+                      width: MediaQuery.of(context).size.width,
+                      child: AdsImages(),
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Container(
+                        margin: EdgeInsets.only(
+                            top: 5.0, left: 8.0, right: 8.0, bottom: 10.0),
                         alignment: Alignment.center,
                         child: Row(
                             //  mainAxisSize: MainAxisSize.max,
@@ -269,9 +285,9 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                                   child: Text(
                                     'Invoice No (Optional)',
                                     style: TextStyle(
-                                      fontSize: 17,
-                                      color: Colors.black,
-                                    ),
+                                        fontSize: 17,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                   flex: 2),
                               Flexible(
@@ -297,27 +313,23 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                                         ),
                                       )),
                                   flex: 2),
-                            ])
-                        /*  Expanded(child:
-
-            imageSlider(context),flex: 2,),*/
-
-                        ),
+                            ])),
                     Container(
-                      padding: EdgeInsets.only(bottom: 10.0, right: 5.0),
+                      margin: EdgeInsets.only(
+                          top: 5.0, left: 8.0, right: 8.0, bottom: 10.0),
                       alignment: Alignment.topLeft,
                       child: Text(
                         'About issue :',
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                          fontSize: 17,
-                          color: Colors.black,
-                        ),
+                            fontSize: 17,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                     Container(
-                        padding: EdgeInsets.only(
-                            left: 2.0, right: 2.0, bottom: 10.0),
+                        margin: EdgeInsets.only(
+                            top: 5.0, left: 8.0, right: 8.0, bottom: 10.0),
                         child: TextFormField(
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -341,18 +353,21 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                           ),
                         )),
                     Container(
-                      padding: EdgeInsets.only(bottom: 10.0),
+                      margin: EdgeInsets.only(
+                          top: 5.0, left: 8.0, right: 8.0, bottom: 10.0),
                       alignment: Alignment.topLeft,
                       child: Text(
                         'Image Uploaded :',
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                          fontSize: 17,
-                          color: Colors.black,
-                        ),
+                            fontSize: 17,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                     Container(
+                        margin: EdgeInsets.only(
+                            left: 8.0, right: 8.0, bottom: 10.0),
                         height: 80.0,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10.0),
@@ -361,11 +376,12 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                         ),
                         child: Row(children: [
                           Container(
+                              margin: EdgeInsets.only(left: 5.0),
                               height: 40,
                               width: 40,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(30.0),
-                                color: Color(0xff004080),
+                                color: Color(0xffff7000),
                               ),
                               child: IconButton(
                                 alignment: Alignment.centerLeft,
@@ -400,34 +416,12 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                                     : Container(),
                               )),
                         ])),
-
-                    /*   Container(
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: Stack(
-                        children:<Widget> [
-
-                          CircleAvatar(
-
-                              radius: 55,
-                              backgroundColor: Colors.white,
-                              child:
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(55),
-                                child:_image != null ?Image.file(
-                                  _image,
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  fit: BoxFit.cover,
-                                ):Container() ,
-                              ) ),
-
-                        ]),),),*/
                     Container(
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                           Container(
+                              margin: EdgeInsets.only(left: 8.0, right: 8.0),
                               alignment: Alignment.centerRight,
                               child: FlatButton(
                                 onPressed: () => {
@@ -437,16 +431,16 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                                 },
                                 child: Text('CANCEL',
                                     style: TextStyle(
-                                        color: Colors.red, fontSize: 20.0)),
+                                        color: Colors.white,
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold)),
                                 textColor: Colors.white,
+                                color: Colors.red,
                                 shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                        color: Colors.red,
-                                        style: BorderStyle.solid),
                                     borderRadius: BorderRadius.circular(32.0)),
                               )),
                           Container(
-                            padding: EdgeInsets.only(left: 20.0),
+                            padding: EdgeInsets.only(right: 20.0),
                             alignment: Alignment.centerRight,
                             child: RaisedButton(
                               onPressed: () => {
@@ -459,7 +453,8 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                                   borderRadius: BorderRadius.circular((32.0))),
                               child: Text(
                                 'SUBMIT',
-                                style: TextStyle(fontSize: 20),
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),

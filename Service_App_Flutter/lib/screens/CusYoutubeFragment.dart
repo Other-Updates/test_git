@@ -13,7 +13,9 @@ import 'package:service_app/screens/CusHomeFragment.dart';
 import 'package:service_app/screens/CusLeadsFragment.dart';
 import 'package:service_app/screens/CusProfileFragment.dart';
 import 'package:service_app/screens/CusServiceFragment.dart';
+import 'package:service_app/screens/CustomerProfile.dart';
 import 'package:service_app/screens/LoginScreen.dart';
+import 'package:service_app/screens/mobilelogin.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CusYoutubeFragment extends StatefulWidget {
@@ -31,7 +33,16 @@ void runyoutubePlayer(){
   int _selectedIndex = 0;
 
   List youtubeList = [];
-  var leadslisted,id = '', customer_id = '', status = '-', inv_no = '',attendant='-',created_date='',work_performed='',description='',customer_image_upload='';
+  var leadslisted,
+      id = '',
+      customer_id = '',
+      status = '-',
+      inv_no = '',
+      attendant = '-',
+      created_date = '',
+      work_performed = '',
+      description = '',
+      customer_image_upload = '';
   List<String> Names = [
     'Abhishek',
     'John',
@@ -57,13 +68,11 @@ void runyoutubePlayer(){
           print(youtubeList);
         });
 
-
         //  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => CustomerDashboardScreen()), (Route<dynamic> route) => false);
       }
       //   sharedPreferences.setString("token", jsonResponse['token']);
     }
   }
-
 
 /*  _launchURL() async {
      const url =  'https://www.youtube.com/watch?v=hePLDVbULZc';
@@ -87,9 +96,8 @@ void runyoutubePlayer(){
   }*/
   customerlogout() async {
     var data = json.encode({"user_id": 'customer_id', "user_type": "2"});
-    final response = await http.post(
-        BASE_URL + 'customer_log_out', headers: {'authorization': basicAuth},
-        body: data);
+    final response = await http.post(BASE_URL + 'customer_log_out',
+        headers: {'authorization': basicAuth}, body: data);
     print(data);
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
@@ -97,9 +105,9 @@ void runyoutubePlayer(){
       if (jsonResponse['status'] == "true") {
         StorageUtil.remove('login_customer_id');
         await Future.delayed(Duration(seconds: 1));
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-            builder: (BuildContext context) => LoginScreen()), (
-            Route<dynamic> route) => false);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+            (Route<dynamic> route) => false);
       } else if (jsonResponse['status'] == 'Error') {
         Navigator.pop(context);
         // _showMessageInScaffold(jsonResponse['message']);
@@ -110,6 +118,7 @@ void runyoutubePlayer(){
       //    _showMessageInScaffold('Contact Admin!!');
     }
   }
+
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
@@ -126,13 +135,19 @@ void runyoutubePlayer(){
           ),*/
           actions: <Widget>[
             FlatButton(
-              child: Text('No', style: TextStyle(color: Color(0xff004080)),),
+              child: Text(
+                'No',
+                style: TextStyle(color: Color(0xff004080)),
+              ),
               onPressed: () {
                 Navigator.of(context).pop(); // Dismiss the Dialog
               },
             ),
             FlatButton(
-              child: Text('Yes', style: TextStyle(color: Color(0xff004080)),),
+              child: Text(
+                'Yes',
+                style: TextStyle(color: Color(0xff004080)),
+              ),
               onPressed: () {
                 customerlogout();
                 //   SystemChannels.platform.invokeMethod('SystemNavigator.pop');
@@ -144,6 +159,7 @@ void runyoutubePlayer(){
       },
     );
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -155,179 +171,248 @@ void runyoutubePlayer(){
   Widget build(BuildContext context) {
     return new WillPopScope(
         onWillPop: () async {
-      bool willLeave = false;
-      // show the confirm dialog
-      await showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-        title: Text('Are you sure want to leave?'),
-        actions: [
-          ElevatedButton(
-              onPressed: () {
-                willLeave = false;
-                SystemNavigator.pop();              },
-              child: Text('Yes')),
-          TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('No'))
-        ],
-      ));
-    return willLeave;
-    },
-   child: Scaffold(
-      appBar: AppBar(
-        leadingWidth: 110,
-        centerTitle: true,
-        backgroundColor: new Color(0xff004080),
-        leading: Image.asset('assets/images/service_logo.png'),
-        title: Text('Youtube'),
-        automaticallyImplyLeading: false,
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.power_settings_new_rounded, color: Colors.white,), onPressed: () {_showMyDialog();}),
-        ],
-      ),
-        body:new Column(children: <Widget>[
-          Container(
-          height: 80,
-          width: MediaQuery.of(context).size.width,
-          child:AdsImages(),
-        ),
-        Expanded(
-
-            child:(youtubeList.length > 0)? ListView.builder(
-              itemCount:youtubeList.length,
-              itemBuilder: (context, index) =>
-                  Youtube(youtubeList[index]),
-            ):Center(child:  Image.asset('assets/images/loader.gif'),
-
-            ),
-    ),
-          Container(
-            height: 30,
-            child:TextAds(),
+          bool willLeave = false;
+          // show the confirm dialog
+          await showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                    title: Text('Are you sure want to leave?'),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            willLeave = false;
+                            SystemNavigator.pop();
+                          },
+                          child: Text('Yes')),
+                      TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text('No'))
+                    ],
+                  ));
+          return willLeave;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            leadingWidth: 110,
+            centerTitle: true,
+            backgroundColor: new Color(0xff004080),
+            leading: Image.asset('assets/images/service_logo.png'),
+            title: Text('Youtube'),
+            automaticallyImplyLeading: false,
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(
+                    Icons.power_settings_new_rounded,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    _showMyDialog();
+                  }),
+            ],
           ),
-          Container(
-            color:Colors.white,
-            alignment:Alignment.bottomCenter,
-            width: double.infinity,
-            child: Row(
-              children: [
-                Expanded(
-                    child:Column(
-                        children: [
-                          IconButton(onPressed: (){
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => CusLeadsFragment()));
-                          }, icon: Icon(Icons.perm_phone_msg_outlined,                                 color: Color(0xff004080),
-                          )),
-                          Text('Leads',   style: TextStyle(
+          body: new Column(children: <Widget>[
+            SizedBox(
+              height: 15.0,
+            ),
+            Container(
+              height: 140,
+              width: MediaQuery.of(context).size.width,
+              child: AdsImages(),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            Expanded(
+              child: Padding(
+                  padding: EdgeInsets.only(left: 7, right: 7),
+                  child: (youtubeList.length > 0)
+                      ? ListView.builder(
+                          itemCount: youtubeList.length,
+                          itemBuilder: (context, index) =>
+                              Youtube(youtubeList[index]),
+                        )
+                      : Center(
+                          child: Image.asset('assets/images/loader.gif'),
+                        )),
+            ),
+            Container(
+              height: 30,
+              child: TextAds(),
+            ),
+            Container(
+              color: Colors.white,
+              alignment: Alignment.bottomCenter,
+              width: double.infinity,
+              child: Row(
+                children: [
+                  Expanded(
+                      child: Column(children: [
+                        IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          CusLeadsFragment()));
+                            },
+                            icon: Icon(
+                              Icons.perm_phone_msg_outlined,
+                              color: Color(0xff004080),
+                            )),
+                        Text(
+                          'Leads',
+                          style: TextStyle(
                             color: Color(0xff004080),
-                          ),),]),
-                    flex:5),
-                Expanded(
-                    child:Column(
-                        children: [
-                          IconButton(onPressed: (){
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => CusServiceFragment()));
-                          }, icon: ImageIcon(
+                          ),
+                        ),
+                      ]),
+                      flex: 5),
+                  Expanded(
+                      child: Column(children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        CusServiceFragment()));
+                          },
+                          icon: ImageIcon(
                             AssetImage('assets/images/paidservice.png'),
                             // color: Color(0xFF3A5A98),
                             color: Color(0xff004080),
-                          ),),
-                          Text('Services',   style: TextStyle(
+                          ),
+                        ),
+                        Text(
+                          'Services',
+                          style: TextStyle(
                             color: Color(0xff004080),
-                          ),),]),
-                    flex:5),
-                Expanded(
-                    child:Column(
-                        children: [
-                          IconButton(onPressed: (){
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => CusHomeFragment()));
-                          }, icon: Icon(Icons.home_outlined,                                 color: Color(0xff004080),
-                          )),
-                          Text('Home',   style: TextStyle(
+                          ),
+                        ),
+                      ]),
+                      flex: 5),
+                  Expanded(
+                      child: Column(children: [
+                        IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          CusHomeFragment()));
+                            },
+                            icon: Icon(
+                              Icons.home_outlined,
+                              color: Color(0xff004080),
+                            )),
+                        Text(
+                          'Home',
+                          style: TextStyle(
                             color: Color(0xff004080),
-
-                          ),),]),
-                    flex:5),
-                Expanded(
-                    child:Column(
-                        children: [
-                          IconButton(onPressed: (){
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => CusProfileFragment()));
-                          }, icon: Icon(Icons.person_outline,                                 color: Color(0xff004080),
-                          )),
-                          Text('Profile',   style: TextStyle(
+                          ),
+                        ),
+                      ]),
+                      flex: 5),
+                  Expanded(
+                      child: Column(children: [
+                        IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          CusProfileFragment()));
+                            },
+                            icon: Icon(
+                              Icons.person_outline,
+                              color: Color(0xff004080),
+                            )),
+                        Text(
+                          'Profile',
+                          style: TextStyle(
                             color: Color(0xff004080),
-                          ),),]),
-                    flex:5),
-                Expanded(
-                    child:Column(
-                        children: [
-                          IconButton(onPressed: (){
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => CusYoutubeFragment()));
-                          }, icon: ImageIcon(
-                            AssetImage('assets/images/youtube_logo.png'),
-                            //  color: Color(0xFF3A5A98),
-                            color:  Color(0xffff7000)
-                          ),),
-                          Text('Youtube',   style: TextStyle(
-                            color:  Color(0xffff7000)
-
-                          ),),]),
-                    flex:5),
-
-              ],
-            ),
-          )
-      ]),
-    ));
+                          ),
+                        ),
+                      ]),
+                      flex: 5),
+                  Expanded(
+                      child: Column(children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        CusYoutubeFragment()));
+                          },
+                          icon: ImageIcon(
+                              AssetImage('assets/images/youtube_logo.png'),
+                              //  color: Color(0xFF3A5A98),
+                              color: Color(0xffff7000)),
+                        ),
+                        Text(
+                          'Youtube',
+                          style: TextStyle(color: Color(0xffff7000)),
+                        ),
+                      ]),
+                      flex: 5),
+                ],
+              ),
+            )
+          ]),
+        ));
   }
 
 //youtubeList['link_data']
 
   @override
   Widget Youtube(youtubeList) {
-    return  new Card(
-                    color: Colors.white,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                  Flexible(
-                      child:  Container(
-                        color: Colors.black,
-                         width: double.infinity,
-                        height: 130,
-                          child:GestureDetector(
-                            onTap:()  async {
-    String url = youtubeList['link_data'];
-    if (await canLaunch(url)) {
-    await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }},
-                          //  borderRadius: new BorderRadius.circular(24.0),
-                            child: Image(
-                            fit: BoxFit.fitWidth,
+    return new Card(
+      shadowColor: Color(0x802196F3),
+      elevation: 4.0,
+      color: Colors.white,
+      shape: new RoundedRectangleBorder(
+          //  side: new BorderSide(color: Color(0xffADDFDE), width: 2.0),
+          borderRadius: BorderRadius.circular(6.0)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Flexible(
+            child: Container(
+              color: Colors.black,
+              width: double.infinity,
+              height: 130,
+              child: GestureDetector(
+                  onTap: () async {
+                    String url = youtubeList['link_data'];
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      throw 'Could not launch $url';
+                    }
+                  },
+                  //  borderRadius: new BorderRadius.circular(24.0),
+                  child: Image(
+                    fit: BoxFit.fitWidth,
 
-                              image: NetworkImage('https://i3.ytimg.com/vi/'+basicFunction.youtubevideo(youtubeList['link_data'])+'/maxresdefault.jpg'),
-                              //  ZVO8Wt_PCgE/hqdefault
-                            ) ),
-
-
-                          ),
-
-                 flex: 2, ),
-                        Flexible(
-                            child:Container(
-                                padding: EdgeInsets.only(left:5.0,right: 5.0),
-                                alignment: Alignment.topCenter,
-
-                                child: Text('${youtubeList['description']}',  textAlign: TextAlign.center, overflow: TextOverflow.ellipsis,maxLines: 6,style: TextStyle(color:Color(0xff676767),fontSize: 15.0),),),flex:2),
-
-
-                      ],),
-
+                    image: NetworkImage('https://i3.ytimg.com/vi/' +
+                        basicFunction.youtubevideo(youtubeList['link_data']) +
+                        '/maxresdefault.jpg'),
+                    //  ZVO8Wt_PCgE/hqdefault
+                  )),
+            ),
+            flex: 2,
+          ),
+          Flexible(
+              child: Container(
+                padding: EdgeInsets.only(left: 5.0, right: 5.0),
+                alignment: Alignment.topCenter,
+                child: Text(
+                  '${youtubeList['description']}',
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 6,
+                  style: TextStyle(color: Color(0xff676767), fontSize: 15.0),
+                ),
+              ),
+              flex: 2),
+        ],
+      ),
     );
   }
-  }
-
+}

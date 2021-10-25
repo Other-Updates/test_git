@@ -13,18 +13,22 @@ import 'package:service_app/screens/CusLeadsFragment.dart';
 import 'package:service_app/screens/CusProfileFragment.dart';
 import 'package:service_app/screens/CusServiceFragment.dart';
 import 'package:service_app/screens/CusYoutubeFragment.dart';
+import 'package:service_app/screens/CustomerProfile.dart';
 import 'package:service_app/screens/LoginScreen.dart';
+import 'package:service_app/screens/mobilelogin.dart';
 import 'globals.dart' as globals;
+
 void main() {
   globals.isLoggedIn = true;
 }
+
 class CusHomeFragment extends StatefulWidget {
   @override
   _CusHomeFragmentState createState() => _CusHomeFragmentState();
 }
 
-class _CusHomeFragmentState extends State<CusHomeFragment> with AutomaticKeepAliveClientMixin {
-
+class _CusHomeFragmentState extends State<CusHomeFragment>
+    with AutomaticKeepAliveClientMixin {
   List pending_leads_list = [];
   int _selectedIndex = 0;
   List<String> Names = [
@@ -52,10 +56,9 @@ class _CusHomeFragmentState extends State<CusHomeFragment> with AutomaticKeepAli
 
   leadspending() async {
     await getTextFromFile();
-    var data = json.encode({"customer_id":mobile_test6});
-    final response = await http.post(
-        BASE_URL + 'pending_leads', headers: {'authorization': basicAuth},
-        body: data);
+    var data = json.encode({"customer_id": mobile_test6});
+    final response = await http.post(BASE_URL + 'pending_leads',
+        headers: {'authorization': basicAuth}, body: data);
     print(data);
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
@@ -77,7 +80,8 @@ class _CusHomeFragmentState extends State<CusHomeFragment> with AutomaticKeepAli
 
   servicepending() async {
     await getTextFromFile();
-    var data = json.encode({"customer_id": mobile_test6, "service_type": "customer"});
+    var data =
+        json.encode({"customer_id": mobile_test6, "service_type": "customer"});
     final response = await http.post(BASE_URL + 'get_pending_service_list',
         headers: {'authorization': basicAuth}, body: data);
     print(data);
@@ -96,11 +100,11 @@ class _CusHomeFragmentState extends State<CusHomeFragment> with AutomaticKeepAli
       Navigator.pop(context);
     }
   }
+
   customerlogout() async {
     var data = json.encode({"user_id": 'customer_id', "user_type": "2"});
-    final response = await http.post(
-        BASE_URL + 'customer_log_out', headers: {'authorization': basicAuth},
-        body: data);
+    final response = await http.post(BASE_URL + 'customer_log_out',
+        headers: {'authorization': basicAuth}, body: data);
     print(data);
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
@@ -108,9 +112,9 @@ class _CusHomeFragmentState extends State<CusHomeFragment> with AutomaticKeepAli
       if (jsonResponse['status'] == "true") {
         StorageUtil.remove('login_customer_id');
         await Future.delayed(Duration(seconds: 1));
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-            builder: (BuildContext context) => LoginScreen()), (
-            Route<dynamic> route) => false);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+            (Route<dynamic> route) => false);
       } else if (jsonResponse['status'] == 'Error') {
         Navigator.pop(context);
         // _showMessageInScaffold(jsonResponse['message']);
@@ -121,6 +125,7 @@ class _CusHomeFragmentState extends State<CusHomeFragment> with AutomaticKeepAli
       //    _showMessageInScaffold('Contact Admin!!');
     }
   }
+
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
@@ -137,13 +142,19 @@ class _CusHomeFragmentState extends State<CusHomeFragment> with AutomaticKeepAli
           ),*/
           actions: <Widget>[
             FlatButton(
-              child: Text('No', style: TextStyle(color: Color(0xff004080)),),
+              child: Text(
+                'No',
+                style: TextStyle(color: Color(0xff004080)),
+              ),
               onPressed: () {
                 Navigator.of(context).pop(); // Dismiss the Dialog
               },
             ),
             FlatButton(
-              child: Text('Yes', style: TextStyle(color: Color(0xff004080)),),
+              child: Text(
+                'Yes',
+                style: TextStyle(color: Color(0xff004080)),
+              ),
               onPressed: () {
                 customerlogout();
                 //   SystemChannels.platform.invokeMethod('SystemNavigator.pop');
@@ -171,363 +182,542 @@ class _CusHomeFragmentState extends State<CusHomeFragment> with AutomaticKeepAli
     final String formatted = serverFormater.format(displayDate);
     return formatted;
   }
+
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
         onWillPop: () async {
-      bool willLeave = false;
-      // show the confirm dialog
-      await showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-        title: Text('Are you sure want to leave?'),
-        actions: [
-          ElevatedButton(
-              onPressed: () {
-                willLeave = false;
-                SystemNavigator.pop();              },
-              child: Text('Yes')),
-          TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('No'))
-        ],
-      ));
-    return willLeave;
-    },
-    child:Scaffold(
-        appBar: AppBar(
-          leadingWidth: 110,
-          centerTitle: true,
-          backgroundColor: new Color(0xff004080),
-          leading: Image.asset('assets/images/service_logo.png'),
-          title: Text('Home'),
-          automaticallyImplyLeading: false,
-          actions: <Widget>[
-            IconButton(icon: Icon(Icons.power_settings_new_rounded, color: Colors.white,), onPressed: () {_showMyDialog();}),
-          ],
-        ),
-        resizeToAvoidBottomInset: false,
-        body: new Column(
-            children: <Widget>[
+          bool willLeave = false;
+          // show the confirm dialog
+          await showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                    title: Text('Are you sure want to leave?'),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            willLeave = false;
+                            SystemNavigator.pop();
+                          },
+                          child: Text('Yes')),
+                      TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text('No'))
+                    ],
+                  ));
+          return willLeave;
+        },
+        child: Scaffold(
+            appBar: AppBar(
+              leadingWidth: 110,
+              centerTitle: true,
+              backgroundColor: new Color(0xff004080),
+              leading: Image.asset('assets/images/service_logo.png'),
+              title: Text('Home'),
+              automaticallyImplyLeading: false,
+              actions: <Widget>[
+                IconButton(
+                    icon: Icon(
+                      Icons.power_settings_new_rounded,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      _showMyDialog();
+                    }),
+              ],
+            ),
+            resizeToAvoidBottomInset: false,
+            body: new Column(children: <Widget>[
               Container(
+                margin: EdgeInsets.all(5.0),
                 child: Row(
                   children: [
                     Expanded(
-                      child:Column(
-                  children:[
-                             GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (
-                                          BuildContext context) =>
-                                          CusLeadsFragment()));
-                                },
-                                child: Image.asset("assets/images/leads.png")
-
-                            )]), flex: 2),
+                        child: Column(children: [
+                          GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        CusLeadsFragment()));
+                              },
+                              child: Image.asset("assets/images/leads.png"))
+                        ]),
+                        flex: 2),
                     Expanded(
-                        child:Column(
-                            children:[
-                              GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (
-                                            BuildContext context) =>
-                                            CusServiceFragment()));
-                                  },
-                                  child: Image.asset("assets/images/service_text.png")
-
-                              )]), flex: 2),
-              /*      Expanded(
-                        child: Container(
-                            child: GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (
-                                          BuildContext context) =>
-                                          CusServiceFragment()));
-                                },
-
-                                child: Image.asset(
-                                    "assets/images/service_text.png"))),
-                        flex: 2)*/
+                        child: Column(children: [
+                          GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        CusServiceFragment()));
+                              },
+                              child:
+                                  Image.asset("assets/images/service_text.png"))
+                        ]),
+                        flex: 2),
                   ],
                 ),
               ),
+              SizedBox(
+                height: 10.0,
+              ),
               Container(
-                height: 80,
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width,
+                height: 140,
+                width: MediaQuery.of(context).size.width,
                 child: AdsImages(),
               ),
-              Expanded(
-                  child: Column(
-                      children: <Widget>[
-                        //alignment: Alignment.topLeft,
-                        Container(
-                            alignment: Alignment.topLeft,
-                            child: Text('Leads', style: TextStyle(
-                                color: Color(0xff004080),
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold))),
-                        Expanded(
-                          child: (pending_leads_list.length > 0) ? ListView
-                              .builder(
-                            itemCount: pending_leads_list.length,
-                            itemBuilder: (context, index) =>
-                                LeadsList(pending_leads_list[index]),
-                          ) : Center(
-                            child: Image.asset('assets/images/loader.gif'),),
-
-                        ),
-
-
-                      ]),
-                  flex: 2),
-              Expanded(
-                  child: Container(
-                      child: Column(
-                          children: <Widget>[
-                            //alignment: Alignment.topLeft,
-                            Container(
-                                alignment: Alignment.topLeft,
-                                child: Text('Services', style: TextStyle(
-                                    color: Color(0xff004080),
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold))),
-                            Expanded(
-                              child: (pending_service_list.length > 0)
-                                  ? ListView.builder(
-                                reverse: false,
-                                itemCount: pending_service_list.length,
-                                itemBuilder: (context, index) =>
-                                    ServiceList(pending_service_list[index]),
-                              )
-                                  : Center(),
-
-                            ),
-
-                          ])),
-                  flex: 2),
-Container(
-    child:Column(
-    children:[
-              Container(
-                height: 30,
-                child: TextAds(),
+              SizedBox(
+                height: 20.0,
               ),
               Container(
-                color:Colors.white,
-                alignment:Alignment.bottomCenter,
-                width: double.infinity,
-                child: Row(
-                  children: [
-                    Expanded(
-                        child:Column(
-                            children: [
-                              IconButton(onPressed: (){
-                                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => CusLeadsFragment()));
-                              }, icon: Icon(Icons.perm_phone_msg_outlined,                                 color: Color(0xff004080),
-                              )),
-                              Text('Leads',   style: TextStyle(
+                child: _tabSection(context),
+              ),
+              // Expanded(
+              //     child: Container(
+              //       margin: EdgeInsets.all(5.0),
+              //       child: Column(children: <Widget>[
+              //         //alignment: Alignment.topLeft,
+              //         Container(
+              //             padding: EdgeInsets.only(top: 10.0, left: 5.0),
+              //             alignment: Alignment.topLeft,
+              //             child: Text('Leads',
+              //                 style: TextStyle(
+              //                     color: Color(0xff004080),
+              //                     fontSize: 20,
+              //                     fontWeight: FontWeight.bold))),
+              //         Expanded(
+              //           child: (pending_leads_list.length > 0)
+              //               ? ListView.builder(
+              //                   itemCount: pending_leads_list.length,
+              //                   itemBuilder: (context, index) =>
+              //                       LeadsList(pending_leads_list[index]),
+              //                 )
+              //               : Center(
+              //                   child: Image.asset('assets/images/loader.gif'),
+              //                 ),
+              //         ),
+              //       ]),
+              //     ),
+              //     flex: 2),
+              // Expanded(
+              //     child: Container(
+              //         margin: EdgeInsets.all(5.0),
+              //         child: Column(children: <Widget>[
+              //           //alignment: Alignment.topLeft,
+              //           Container(
+              //               alignment: Alignment.topLeft,
+              //               child: Text('Services',
+              //                   style: TextStyle(
+              //                       color: Color(0xff004080),
+              //                       fontSize: 20,
+              //                       fontWeight: FontWeight.bold))),
+              //           Expanded(
+              //             child: (pending_service_list.length > 0)
+              //                 ? ListView.builder(
+              //                     reverse: false,
+              //                     itemCount: pending_service_list.length,
+              //                     itemBuilder: (context, index) =>
+              //                         ServiceList(pending_service_list[index]),
+              //                   )
+              //                 : Center(),
+              //           ),
+              //         ])),
+              //     flex: 2),
+              Container(
+                  child: Column(children: [
+                Container(
+                  height: 30,
+                  child: TextAds(),
+                ),
+                Container(
+                  color: Colors.white,
+                  alignment: Alignment.bottomCenter,
+                  width: double.infinity,
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: Column(children: [
+                            IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              CusLeadsFragment()));
+                                },
+                                icon: Icon(
+                                  Icons.perm_phone_msg_outlined,
+                                  color: Color(0xff004080),
+                                )),
+                            Text(
+                              'Leads',
+                              style: TextStyle(
                                 color: Color(0xff004080),
-                              ),),]),
-                        flex:5),
-                    Expanded(
-                        child:Column(
-                            children: [
-                              IconButton(onPressed: (){
-                                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => CusServiceFragment()));
-                              }, icon: ImageIcon(
+                              ),
+                            ),
+                          ]),
+                          flex: 5),
+                      Expanded(
+                          child: Column(children: [
+                            IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            CusServiceFragment()));
+                              },
+                              icon: ImageIcon(
                                 AssetImage('assets/images/paidservice.png'),
                                 // color: Color(0xFF3A5A98),
                                 color: Color(0xff004080),
-                              ),),
-                              Text('Services',   style: TextStyle(
+                              ),
+                            ),
+                            Text(
+                              'Services',
+                              style: TextStyle(
                                 color: Color(0xff004080),
-
-                              ),),]),
-                        flex:5),
-                    Expanded(
-                        child:Column(
-                            children: [
-                              IconButton(onPressed: (){
-                                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => CusHomeFragment()));
-                              }, icon: Icon(Icons.home_outlined, color: Color(0xffff7000))),
-                              Text('Home',   style: TextStyle(
-                                color:  Color(0xffff7000)
-
-                              ),),]),
-                        flex:5),
-                    Expanded(
-                        child:Column(
-                            children: [
-                              IconButton(onPressed: (){
-                                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => CusProfileFragment()));
-                              }, icon: Icon(Icons.person_outline,                                 color: Color(0xff004080),
-                              )),
-                              Text('Profile',   style: TextStyle(
+                              ),
+                            ),
+                          ]),
+                          flex: 5),
+                      Expanded(
+                          child: Column(children: [
+                            IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              CusHomeFragment()));
+                                },
+                                icon: Icon(Icons.home_outlined,
+                                    color: Color(0xffff7000))),
+                            Text(
+                              'Home',
+                              style: TextStyle(color: Color(0xffff7000)),
+                            ),
+                          ]),
+                          flex: 5),
+                      Expanded(
+                          child: Column(children: [
+                            IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              CusProfileFragment()));
+                                },
+                                icon: Icon(
+                                  Icons.person_outline,
+                                  color: Color(0xff004080),
+                                )),
+                            Text(
+                              'Profile',
+                              style: TextStyle(
                                 color: Color(0xff004080),
-                              ),),]),
-                        flex:5),
-                    Expanded(
-                        child:Column(
-                            children: [
-                              IconButton(onPressed: (){
-                                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => CusYoutubeFragment()));
-                              }, icon: ImageIcon(
+                              ),
+                            ),
+                          ]),
+                          flex: 5),
+                      Expanded(
+                          child: Column(children: [
+                            IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            CusYoutubeFragment()));
+                              },
+                              icon: ImageIcon(
                                 AssetImage('assets/images/youtube_logo.png'),
                                 //  color: Color(0xFF3A5A98),
                                 color: Color(0xff004080),
-                              ),),
-                              Text('Youtube',   style: TextStyle(
+                              ),
+                            ),
+                            Text(
+                              'Youtube',
+                              style: TextStyle(
                                 color: Color(0xff004080),
-
-                              ),),]),
-                        flex:5),
-
-                  ],
-                ),
-              )
-            ]))])));
+                              ),
+                            ),
+                          ]),
+                          flex: 5),
+                    ],
+                  ),
+                )
+              ]))
+            ])));
   }
 
   Widget ServiceList(pending_service_list) {
     return Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+        shadowColor: Color(0x802196F3),
+        elevation: 4.0,
         color: Colors.white,
+        shape: new RoundedRectangleBorder(
+            side: new BorderSide(
+                color: (pending_service_list['status'].toString() == "0")
+                    ? Color(0xffFFB347)
+                    : (pending_service_list['status'].toString() == "1")
+                        ? Colors.green
+                        : Colors.red,
+                width: 1.0),
+            borderRadius: BorderRadius.circular(5.0)),
         child: new Column(
             mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment:
-            MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                //padding: EdgeInsets.only(left: 10),
+                  //padding: EdgeInsets.only(left: 10),
                   child: new Row(
                       mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment:
-                      MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Container(
-                          alignment: Alignment.topLeft,
-                          decoration: new BoxDecoration(
-                            color: (pending_service_list['status'].toString() ==
+                    Container(
+                      alignment: Alignment.topLeft,
+                      decoration: new BoxDecoration(
+                        borderRadius: new BorderRadius.only(
+                            topLeft: const Radius.circular(5),
+                            bottomLeft: const Radius.circular(5)),
+                        color: (pending_service_list['status'].toString() ==
                                 "0")
-                                ? Colors.orange
-                                : (pending_service_list['status'].toString() ==
-                                "1") ? Colors.green : Colors.red,
-
-                          ),
-                          width: 3,
-                          height: 30,
-
+                            ? Colors.orange
+                            : (pending_service_list['status'].toString() == "1")
+                                ? Colors.green
+                                : Colors.red,
+                      ),
+                      width: 5,
+                      height: 45,
+                    ),
+                    Flexible(
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: new Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Flexible(
+                                    child: Container(
+                                        padding: EdgeInsets.only(left: 5.0),
+                                        alignment: Alignment.topLeft,
+                                        child: Text(
+                                            '${pending_service_list['description']}')),
+                                    flex: 3),
+                                Flexible(
+                                    child: Container(
+                                        padding: EdgeInsets.only(right: 5.0),
+                                        alignment: Alignment.topRight,
+                                        child: Text(convertDateTimeDisplay(
+                                            '${pending_service_list['created_date']}'))),
+                                    flex: 3),
+                              ]),
                         ),
-
-                        Flexible(
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: new Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.start,
-                                  children: <Widget>[
-
-                                    Flexible(
-                                        child: Container(
-                                            padding: EdgeInsets.only(left: 5.0),
-                                            alignment: Alignment.topLeft,
-                                            child: Text(
-                                                '${pending_service_list['description']}')),
-                                        flex: 3),
-                                    Flexible(
-                                        child: Container(
-                                            padding: EdgeInsets.only(
-                                                right: 5.0),
-                                            alignment: Alignment.topRight,
-                                            child: Text(convertDateTimeDisplay(
-                                                '${pending_service_list['created_date']}'))),
-                                        flex: 3),
-                                  ]),),
-                            flex: 3),
-
-                      ])),
+                        flex: 3),
+                  ])),
             ]));
   }
 
   Widget LeadsList(pending_leads_list1) {
     return Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+        shadowColor: Color(0x802196F3),
+        elevation: 4.0,
         color: Colors.white,
+        shape: new RoundedRectangleBorder(
+            side: new BorderSide(
+                color: (pending_leads_list1['status'].toString() == "leads" ||
+                        pending_leads_list1['status'].toString() ==
+                            "leads_follow_up" ||
+                        pending_leads_list1['status'].toString() ==
+                            "quotation_follow_up" ||
+                        pending_leads_list1['status'].toString() == "quotation")
+                    ? Color(0xffFFB347)
+                    : (pending_leads_list1['status'].toString() ==
+                            "order_conform")
+                        ? Colors.green
+                        : Colors.red,
+                width: 1.0),
+            borderRadius: BorderRadius.circular(5.0)),
         child: new Column(
             mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment:
-            MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                //padding: EdgeInsets.only(left: 10),
+                  //padding: EdgeInsets.only(left: 10),
                   child: new Row(
                       mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment:
-                      MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Container(
-                          alignment: Alignment.topLeft,
-                          decoration: new BoxDecoration(
-                            color: (pending_leads_list1['status'].toString() ==
-                                "leads" ||
+                    Container(
+                      alignment: Alignment.topLeft,
+                      decoration: new BoxDecoration(
+                        borderRadius: new BorderRadius.only(
+                            topLeft: const Radius.circular(5),
+                            bottomLeft: const Radius.circular(5)),
+                        color: (pending_leads_list1['status'].toString() ==
+                                    "leads" ||
                                 pending_leads_list1['status'].toString() ==
                                     "leads_follow_up" ||
                                 pending_leads_list1['status'].toString() ==
                                     "quotation_follow_up" ||
                                 pending_leads_list1['status'].toString() ==
                                     "quotation")
-                                ? Colors.orange
-                                : (pending_leads_list1['status'].toString() ==
-                                "order_conform") ? Colors.green : Colors.red,
-
-                          ),
-                          width: 3,
-                          height: 30,
-
+                            ? Colors.orange
+                            : (pending_leads_list1['status'].toString() ==
+                                    "order_conform")
+                                ? Colors.green
+                                : Colors.red,
+                      ),
+                      width: 5,
+                      height: 45,
+                    ),
+                    Flexible(
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: new Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Flexible(
+                                    child: Container(
+                                        padding: EdgeInsets.only(left: 5.0),
+                                        alignment: Alignment.topLeft,
+                                        child: Text(
+                                            '${pending_leads_list1['enquiry_no']}')),
+                                    flex: 3),
+                                Flexible(
+                                    child: Container(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          '${pending_leads_list1['enquiry_about']}',
+                                          maxLines: 1,
+                                        )),
+                                    flex: 3),
+                                Flexible(
+                                    child: Container(
+                                        padding: EdgeInsets.only(right: 5.0),
+                                        alignment: Alignment.topRight,
+                                        child: Text(convertDateTimeDisplay(
+                                            '${pending_leads_list1['created_date']}'))),
+                                    flex: 3),
+                              ]),
                         ),
-
-                        Flexible(
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: new Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    Flexible(
-                                        child: Container(
-                                            padding: EdgeInsets.only(left: 5.0),
-                                            alignment: Alignment.topLeft,
-                                            child: Text(
-                                                '${pending_leads_list1['enquiry_no']}')),
-                                        flex: 3),
-                                    Flexible(
-                                        child: Container(
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              '${pending_leads_list1['enquiry_about']}',
-                                              maxLines: 1,)), flex: 3),
-                                    Flexible(
-                                        child: Container(
-                                            padding: EdgeInsets.only(
-                                                right: 5.0),
-                                            alignment: Alignment.topRight,
-                                            child: Text(convertDateTimeDisplay(
-                                                '${pending_leads_list1['created_date']}'))),
-                                        flex: 3),
-                                  ]),),
-                            flex: 3),
-                      ])),
+                        flex: 3),
+                  ])),
             ]));
+  }
+
+  Widget _tabSection(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(left: 20, right: 20),
+            child: TabBar(
+                unselectedLabelColor: Color(0xff004080),
+                labelColor: Colors.white,
+                indicatorSize: TabBarIndicatorSize.tab,
+                indicatorColor: Color(0xffff7000),
+                indicator: BoxDecoration(
+                    //  gradient: LinearGradient(
+                    //   color: Color(0xff004080), Colors.orangeAccent]),
+                    borderRadius: BorderRadius.circular(50),
+                    color: Color(0xff004080)),
+                tabs: [
+                  Tab(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Leads",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  Tab(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Services",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ]),
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          Container(
+            //Add this to give height
+            height: 280,
+            child: TabBarView(children: [
+              // Container(
+              //   child: Expanded(
+              //     child:
+              // Container(
+              //   margin: EdgeInsets.all(5.0),
+              //   child: ListView(children: <Widget>[
+              //     //alignment: Alignment.topLeft,
+              //     Container(
+              //         padding: EdgeInsets.only(top: 10.0, left: 5.0),
+              //         alignment: Alignment.topLeft,
+              //         child: Text('Leads',
+              //             style: TextStyle(
+              //                 color: Color(0xff004080),
+              //                 fontSize: 20,
+              //                 fontWeight: FontWeight.bold))),
+              Expanded(
+                child: Padding(
+                    padding: EdgeInsets.only(left: 7, right: 7),
+                    child: (pending_leads_list.length > 0)
+                        ? ListView.builder(
+                            itemCount: pending_leads_list.length,
+                            itemBuilder: (context, index) =>
+                                LeadsList(pending_leads_list[index]),
+                          )
+                        : Center(
+                            child: Image.asset('assets/images/loader.gif'),
+                          )),
+              ),
+              //   ]),
+              // ),
+              //   ),
+              // ),
+              // Container(
+              //   child: Expanded(
+              //     child:
+              // Container(
+              //     margin: EdgeInsets.all(5.0),
+              //     child: Column(children: <Widget>[
+              //       //alignment: Alignment.topLeft,
+              //       Container(
+              //           alignment: Alignment.topLeft,
+              //           child: Text('Services',
+              //               style: TextStyle(
+              //                   color: Color(0xff004080),
+              //                   fontSize: 20,
+              //                   fontWeight: FontWeight.bold))),
+              Expanded(
+                  child: Padding(
+                padding: EdgeInsets.only(left: 7, right: 7),
+                child: (pending_service_list.length > 0)
+                    ? ListView.builder(
+                        reverse: false,
+                        itemCount: pending_service_list.length,
+                        itemBuilder: (context, index) =>
+                            ServiceList(pending_service_list[index]),
+                      )
+                    : Center(),
+              )),
+              //  ])),
+              //   ),
+              // ),
+            ]),
+          ),
+        ],
+      ),
+    );
   }
 
   @override

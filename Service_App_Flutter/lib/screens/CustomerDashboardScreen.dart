@@ -15,13 +15,18 @@ import 'package:service_app/screens/CusYoutubeFragment.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:http/http.dart' as http;
 import 'package:marquee/marquee.dart';
+import 'package:service_app/screens/CustomerProfile.dart';
 import 'package:service_app/screens/LoginScreen.dart';
+import 'package:service_app/screens/mobilelogin.dart';
 import 'LoaderScreen.dart';
+
 class CustomerDashboardScreen extends StatefulWidget {
 //  NormalBottomNavBar({Key key}) : super(key: key);
   @override
-  _CustomerDashboardScreenState createState() => _CustomerDashboardScreenState();
+  _CustomerDashboardScreenState createState() =>
+      _CustomerDashboardScreenState();
 }
+
 class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
   PageController _pageController = PageController(initialPage: 2);
   List<Widget> _Screens = [
@@ -38,6 +43,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
       _selectedIndex = index;
     });
   }
+
   List _pages = [
     Text("Leads"),
     Text("Services"),
@@ -48,6 +54,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
   void onItemTapped(int selectedIndex) {
     _pageController.jumpToPage(selectedIndex);
   }
+
   int _currentIndex = 0;
   List images = [];
   Swiper imageSlider(context) {
@@ -62,6 +69,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
       layout: SwiperLayout.DEFAULT,
     );
   }
+
   adsapi() async {
     String basicAuth = "Basic YWRtaW46MTIzNA==";
     //   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -81,11 +89,11 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
       //   sharedPreferences.setString("token", jsonResponse['token']);
     }
   }
+
   customerlogout() async {
     var data = json.encode({"user_id": 'customer_id', "user_type": "2"});
-    final response = await http.post(
-        BASE_URL + 'customer_log_out', headers: {'authorization': basicAuth},
-        body: data);
+    final response = await http.post(BASE_URL + 'customer_log_out',
+        headers: {'authorization': basicAuth}, body: data);
     print(data);
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
@@ -93,9 +101,9 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
       if (jsonResponse['status'] == "true") {
         StorageUtil.remove('login_customer_id');
         await Future.delayed(Duration(seconds: 1));
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-            builder: (BuildContext context) => LoginScreen()), (
-            Route<dynamic> route) => false);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+            (Route<dynamic> route) => false);
       } else if (jsonResponse['status'] == 'Error') {
         Navigator.pop(context);
         // _showMessageInScaffold(jsonResponse['message']);
@@ -106,6 +114,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
       //    _showMessageInScaffold('Contact Admin!!');
     }
   }
+
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
@@ -122,13 +131,19 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
           ),*/
           actions: <Widget>[
             FlatButton(
-              child: Text('No', style: TextStyle(color: Color(0xff004080)),),
+              child: Text(
+                'No',
+                style: TextStyle(color: Color(0xff004080)),
+              ),
               onPressed: () {
                 Navigator.of(context).pop(); // Dismiss the Dialog
               },
             ),
             FlatButton(
-              child: Text('Yes', style: TextStyle(color: Color(0xff004080)),),
+              child: Text(
+                'Yes',
+                style: TextStyle(color: Color(0xff004080)),
+              ),
               onPressed: () {
                 customerlogout();
                 //   SystemChannels.platform.invokeMethod('SystemNavigator.pop');
@@ -140,6 +155,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
       },
     );
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -241,131 +257,159 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
       }
     },);*/
 
-     @override
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
-      bool willLeave = false;
-      // show the confirm dialog
-      await showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-        title: Text('Are you sure want to leave?'),
-        actions: [
-          ElevatedButton(
-              onPressed: () {
-                willLeave = false;
-                SystemNavigator.pop();              },
-              child: Text('Yes')),
-          TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('No'))
-        ],
-      ));
-       return willLeave;
-       },
-     child: Scaffold(
-      resizeToAvoidBottomInset : false,
-      appBar: AppBar(
-        leadingWidth: 110,
-        centerTitle: true,
-        backgroundColor: new Color(0xff004080),
-        leading: Image.asset('assets/images/service_logo.png'),
-        title: _pages[_selectedIndex],
-        automaticallyImplyLeading: false,
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.power_settings_new_rounded, color: Colors.white,), onPressed: () {_showMyDialog();}),
-        ],
-      ),
+          bool willLeave = false;
+          // show the confirm dialog
+          await showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                    title: Text('Are you sure want to leave?'),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            willLeave = false;
+                            SystemNavigator.pop();
+                          },
+                          child: Text('Yes')),
+                      TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text('No'))
+                    ],
+                  ));
+          return willLeave;
+        },
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            leadingWidth: 110,
+            centerTitle: true,
+            backgroundColor: new Color(0xff004080),
+            leading: Image.asset('assets/images/service_logo.png'),
+            title: _pages[_selectedIndex],
+            automaticallyImplyLeading: false,
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(
+                    Icons.power_settings_new_rounded,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    _showMyDialog();
+                  }),
+            ],
+          ),
+          body: Container(
+            child: Container(
+                height: MediaQuery.of(context).size.height,
+                child: Column(children: [
+                  Expanded(
+                      child: PageView(
+                    controller: _pageController,
+                    //  children:
+                    children: _Screens,
 
-      body: Container(
-    child: Container(
-    height: MediaQuery.of(context).size.height,
-        child:Column(
-          children:[
-
-
-    Expanded(child:  PageView(
-
-        controller: _pageController,
-      //  children:
-        children:
-        _Screens,
-
-        onPageChanged: _onPageChanged,
-        physics: NeverScrollableScrollPhysics(),
-
-      ))
-          ] )),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-
-        onTap: onItemTapped,
+                    onPageChanged: _onPageChanged,
+                    physics: NeverScrollableScrollPhysics(),
+                  ))
+                ])),
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            onTap: onItemTapped,
             //_currentIndex = _currentIndex;
 
-      //  onTap: ,
-        currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
-        // this will be set when a new tab is tapped
-        items: [
-          BottomNavigationBarItem(
-
-            backgroundColor: new Color(0xff004080),
-            icon:   new Icon(Icons.perm_phone_msg_outlined,
-              color:   _selectedIndex == 0 ? Color(0xffff7000):Color(0xff004080),
-            ),
-            title: new Text('Leads',
-              style: TextStyle(
-                color: _selectedIndex == 0 ? Color(0xffff7000):Color(0xff004080),
-
+            //  onTap: ,
+            currentIndex: _currentIndex,
+            type: BottomNavigationBarType.fixed,
+            // this will be set when a new tab is tapped
+            items: [
+              BottomNavigationBarItem(
+                backgroundColor: new Color(0xff004080),
+                icon: new Icon(
+                  Icons.perm_phone_msg_outlined,
+                  color: _selectedIndex == 0
+                      ? Color(0xffff7000)
+                      : Color(0xff004080),
+                ),
+                title: new Text(
+                  'Leads',
+                  style: TextStyle(
+                    color: _selectedIndex == 0
+                        ? Color(0xffff7000)
+                        : Color(0xff004080),
+                  ),
+                ),
               ),
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage('assets/images/paidservice.png'),
-             // color: Color(0xFF3A5A98),
+              BottomNavigationBarItem(
+                icon: ImageIcon(
+                  AssetImage('assets/images/paidservice.png'),
+                  // color: Color(0xFF3A5A98),
 
-               color: _selectedIndex == 1 ? Color(0xffff7000):Color(0xff004080),
-            ),
-
-            title: new Text('Services',
-              style: TextStyle(
-                color: _selectedIndex == 1 ? Color(0xffff7000):Color(0xff004080),
-              ),),
+                  color: _selectedIndex == 1
+                      ? Color(0xffff7000)
+                      : Color(0xff004080),
+                ),
+                title: new Text(
+                  'Services',
+                  style: TextStyle(
+                    color: _selectedIndex == 1
+                        ? Color(0xffff7000)
+                        : Color(0xff004080),
+                  ),
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: new Icon(
+                  Icons.home_outlined,
+                  color: _selectedIndex == 2
+                      ? Color(0xffff7000)
+                      : Color(0xff004080),
+                ),
+                title: new Text(
+                  'Home',
+                  style: TextStyle(
+                    color: _selectedIndex == 2
+                        ? Color(0xffff7000)
+                        : Color(0xff004080),
+                  ),
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: new Icon(
+                  Icons.person_outline,
+                  color: _selectedIndex == 3
+                      ? Color(0xffff7000)
+                      : Color(0xff004080),
+                ),
+                title: new Text(
+                  'Profile',
+                  style: TextStyle(
+                    color: _selectedIndex == 3
+                        ? Color(0xffff7000)
+                        : Color(0xff004080),
+                  ),
+                ),
+              ),
+              BottomNavigationBarItem(
+                  icon: ImageIcon(
+                    AssetImage('assets/images/youtube_logo.png'),
+                    //  color: Color(0xFF3A5A98),
+                    color: _selectedIndex == 4
+                        ? Color(0xffff7000)
+                        : Color(0xff004080),
+                  ),
+                  title: Text(
+                    'Youtube',
+                    style: TextStyle(
+                      color: _selectedIndex == 4
+                          ? Color(0xffff7000)
+                          : Color(0xff004080),
+                    ),
+                  ))
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.home_outlined,
-              color: _selectedIndex == 2 ? Color(0xffff7000):Color(0xff004080),
-            ),
-            title: new Text('Home',
-              style: TextStyle(
-                color:_selectedIndex == 2 ? Color(0xffff7000):Color(0xff004080),
-              ),),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.person_outline,
-              color: _selectedIndex == 3 ? Color(0xffff7000):Color(0xff004080),
-            ),
-            title: new Text('Profile',
-              style: TextStyle(
-                color: _selectedIndex == 3 ? Color(0xffff7000):Color(0xff004080),
-              ),),
-          ),
-          BottomNavigationBarItem(
-              icon: ImageIcon(
-                AssetImage('assets/images/youtube_logo.png'),
-              //  color: Color(0xFF3A5A98),
-                color: _selectedIndex == 4 ? Color(0xffff7000):Color(0xff004080),
-               ),
-              title: Text('Youtube',
-                style: TextStyle(
-                  color: _selectedIndex == 4 ? Color(0xffff7000):Color(0xff004080),
-                ),)
-          )
-        ],
-      ),
-    ));
+        ));
   }
-  }
-
+}

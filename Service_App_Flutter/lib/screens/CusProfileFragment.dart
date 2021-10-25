@@ -14,14 +14,19 @@ import 'package:service_app/screens/CusHomeFragment.dart';
 import 'package:service_app/screens/CusLeadsFragment.dart';
 import 'package:service_app/screens/CusServiceFragment.dart';
 import 'package:service_app/screens/CusYoutubeFragment.dart';
+import 'package:service_app/screens/CustomerProfile.dart';
 import 'package:service_app/screens/LoginScreen.dart';
+import 'package:flutter_string_encryption/flutter_string_encryption.dart';
+import 'package:encrypt/encrypt.dart';
+import 'package:crypto/crypto.dart';
+import 'package:service_app/screens/mobilelogin.dart';
 
-class CusProfileFragment extends StatefulWidget {
+class CusProfile extends StatefulWidget {
   @override
-  _CusProfileFragmentState createState() => _CusProfileFragmentState();
+  _CusProfileState createState() => _CusProfileState();
 }
 
-class _CusProfileFragmentState extends State<CusProfileFragment> {
+class _CusProfileState extends State<CusProfile> {
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   var selectedImage;
@@ -40,6 +45,19 @@ class _CusProfileFragmentState extends State<CusProfileFragment> {
       ),
     );
   }
+
+  final cryptor = new PlatformStringCryptor();
+  // final String salt = await cryptor.generateSalt();
+  // final String key = await cryptor.generateKeyFromPassword(password, salt);
+  // final String encrypted =
+  //     await cryptor.encrypt("Password that you want to encrypt", key);
+  // final key = Key.fromUtf8('put32charactershereeeeeeeeeeeee!'); //32 chars
+  // final iv = IV.fromUtf8('put16characters!');
+  // String decryptMyData(String text) {
+  //   final e = Encrypter(AES(key, mode: AESMode.cbc));
+  //   final decrypted_data = e.decrypt(Encrypted.fromBase64(text), iv: iv);
+  //   return decrypted_data;
+  // }
 
   FocusNode myFocusNode1 = new FocusNode();
   FocusNode myFocusNode2 = new FocusNode();
@@ -131,6 +149,10 @@ class _CusProfileFragmentState extends State<CusProfileFragment> {
     }
   }
 
+  String generateMd5(String input) {
+    return md5.convert(utf8.encode(mobile_test6)).toString();
+  }
+
   updateprofile() async {
     var data = json.encode({
       "customer_id": mobile_test1,
@@ -207,7 +229,7 @@ class _CusProfileFragmentState extends State<CusProfileFragment> {
         emailController.text = mobile_test4;
         phonenumberController.text = mobile_test3;
         usernameController.text = mobile_test2;
-        passwordController.text = mobile_test6;
+        passwordController.text = generateMd5(mobile_test6);
         //_image = Image.network(mobile_test7);
         print("huhaiuh" + mobile_test7);
       });
@@ -269,7 +291,7 @@ class _CusProfileFragmentState extends State<CusProfileFragment> {
         StorageUtil.remove('login_customer_id');
         await Future.delayed(Duration(seconds: 1));
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (BuildContext context) => LoginScreen()),
+            MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
             (Route<dynamic> route) => false);
       } else if (jsonResponse['status'] == 'Error') {
         Navigator.pop(context);
@@ -376,425 +398,707 @@ class _CusProfileFragmentState extends State<CusProfileFragment> {
                   height: double.infinity,
                   decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: AssetImage('assets/images/bg_profile.png'),
+                          image: AssetImage('assets/images/serviceBolt.jpg'),
                           fit: BoxFit.cover)),
                   child: ListView(children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(20, 30, 20, 0),
-                      alignment: Alignment.topCenter,
-                      child: GestureDetector(
-                          child: Align(
-                        child: Stack(children: <Widget>[
-                          CircleAvatar(
-                              radius: 55,
-                              backgroundColor: Colors.white,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(55),
-
-                                /*mobile_test7 != null
-                                      ? Image.network(
-                                          _image,
-                                          width: double.infinity,
-                                          height: double.infinity,
-                                          fit: BoxFit.cover,
-                                        )
-                                      : */
-                                child: _image != null
-                                    ? Image.file(
-                                        _image,
-                                        width: double.infinity,
-                                        height: double.infinity,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : (mobile_test7 != null)
-                                        ? Image.network(
-                                            mobile_test7,
+                    // Container(
+                    //   padding: EdgeInsets.fromLTRB(20, 30, 20, 0),
+                    //   alignment: Alignment.topCenter,
+                    //   child: GestureDetector(
+                    //       child: Align(
+                    //     child: Stack(children: <Widget>[
+                    //       CircleAvatar(
+                    //           radius: 75,
+                    //           backgroundColor: Colors.white,
+                    //           child: ClipRRect(
+                    //             borderRadius: BorderRadius.circular(75),
+                    //
+                    //             /*mobile_test7 != null
+                    //                   ? Image.network(
+                    //                       _image,
+                    //                       width: double.infinity,
+                    //                       height: double.infinity,
+                    //                       fit: BoxFit.cover,
+                    //                     )
+                    //                   : */
+                    //             child: _image != null
+                    //                 ? Image.file(
+                    //                     _image,
+                    //                     width: double.infinity,
+                    //                     height: double.infinity,
+                    //                     fit: BoxFit.cover,
+                    //                   )
+                    //                 : (mobile_test7 != null)
+                    //                     ? Image.network(
+                    //                         mobile_test7,
+                    //                         width: double.infinity,
+                    //                         height: double.infinity,
+                    //                         fit: BoxFit.cover,
+                    //                       )
+                    //                     : Image.asset(
+                    //                         "assets/images/favicon.png",
+                    //                         width: double.infinity,
+                    //                         height: double.infinity,
+                    //                         fit: BoxFit.cover,
+                    //                       ),
+                    //           )),
+                    //
+                    //       // profile['profile_image']
+                    //       Positioned(
+                    //         right: 2.0,
+                    //         bottom: 0.0,
+                    //         child: Container(
+                    //             height: 35,
+                    //             width: 35,
+                    //             decoration: BoxDecoration(
+                    //               borderRadius: BorderRadius.circular(30.0),
+                    //               color: Color(0xffff7000),
+                    //             ),
+                    //             child: IconButton(
+                    //               alignment: Alignment.center,
+                    //               icon: Icon(Icons.camera_alt,
+                    //                   size: 19.0, color: Colors.white),
+                    //               color: Color(0xff004080),
+                    //               onPressed: () {
+                    //                 _optionsDialogBox();
+                    //               },
+                    //             )),
+                    //       ),
+                    //     ]),
+                    //   )),
+                    // ),
+                    SizedBox(
+                      height: 80.0,
+                    ),
+                    Stack(children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 48),
+                        height: 500,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                      ),
+                      Align(
+                          alignment: Alignment.topCenter,
+                          child: SizedBox(
+                            child: Stack(children: <Widget>[
+                              CircleAvatar(
+                                  radius: 55,
+                                  backgroundColor: Colors.white,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(55),
+                                    child: _image != null
+                                        ? Image.file(
+                                            _image,
                                             width: double.infinity,
                                             height: double.infinity,
                                             fit: BoxFit.cover,
                                           )
-                                        : Image.asset(
-                                            "assets/images/favicon.png"),
-                              )),
+                                        : (mobile_test7 != null)
+                                            ? Image.network(
+                                                mobile_test7,
+                                                width: double.infinity,
+                                                height: double.infinity,
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Image.asset(
+                                                "assets/images/profileIot.png",
+                                                width: double.infinity,
+                                                height: double.infinity,
+                                                fit: BoxFit.cover,
+                                              ),
+                                  )),
 
-                          // profile['profile_image']
-                          Positioned(
-                            right: 5.0,
-                            bottom: 0.0,
-                            child: Container(
-                                height: 35,
-                                width: 35,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  color: Color(0xff004080),
-                                ),
-                                child: IconButton(
-                                  alignment: Alignment.center,
-                                  icon: Icon(Icons.camera_alt,
-                                      color: Colors.white),
-                                  color: Color(0xff004080),
-                                  onPressed: () {
-                                    _optionsDialogBox();
-                                  },
-                                )),
-                          ),
-                        ]),
-                      )),
-                    ),
-                    Form(
-                        key: _formKey,
-                        child: Column(mainAxisSize: MainAxisSize.min,
-                            //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                //height: 70,
-                                padding: EdgeInsets.fromLTRB(20, 30, 20, 0),
-                                child: TextFormField(
-                                  obscureText: false,
-                                  focusNode: myFocusNode1,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Please enter name';
-                                    }
-                                    return null;
-                                  },
-                                  maxLength: 10,
-                                  controller: usernameController,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    counterText: "",
-                                    labelText: 'Name',
-                                    labelStyle: TextStyle(
-                                        color: myFocusNode1.hasFocus
-                                            ? Color(0xff004080)
-                                            : Colors.grey),
-                                    contentPadding: EdgeInsets.fromLTRB(
-                                        20.0, 15.0, 20.0, 15.0),
-                                    //  hintStyle: TextStyle(color:Colors.grey),
-                                    fillColor: Colors.white,
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(32.0)),
-                                      borderSide: BorderSide(
-                                          color: Color(0xff004080), width: 2),
+                              // profile['profile_image']
+                              Positioned(
+                                right: 2.0,
+                                bottom: 0.0,
+                                child: Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      color: Color(0xffff7000),
                                     ),
-                                    alignLabelWithHint: true,
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(32.0)),
-                                      borderSide: BorderSide(
-                                          color: Color(0xff004080), width: 2),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(32.0)),
-                                      borderSide: BorderSide(
-                                          color: Colors.red, width: 2),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(32.0)),
-                                      borderSide: BorderSide(
-                                          color: Color(0xff004080), width: 2),
-                                    ),
-                                  ),
-                                ),
+                                    child: IconButton(
+                                      alignment: Alignment.center,
+                                      icon: Icon(Icons.camera_alt,
+                                          size: 19.0, color: Colors.white),
+                                      color: Color(0xff004080),
+                                      onPressed: () {
+                                        _optionsDialogBox();
+                                      },
+                                    )),
                               ),
-                              Container(
-                                //  height: 70,
-                                padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-                                child: TextFormField(
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Please enter email';
-                                    }
-                                    return null;
-                                  },
-                                  obscureText: false,
-                                  focusNode: myFocusNode2,
-                                  controller: emailController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Email ID',
-                                    labelStyle: TextStyle(
-                                        color: myFocusNode2.hasFocus
-                                            ? Color(0xff004080)
-                                            : Colors.grey),
-                                    contentPadding: EdgeInsets.fromLTRB(
-                                        20.0, 15.0, 20.0, 15.0),
-                                    fillColor: Colors.white,
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(32.0)),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(32.0)),
-                                      borderSide: BorderSide(
-                                          color: Color(0xff004080), width: 2),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(32.0)),
-                                      borderSide: BorderSide(
-                                          color: Colors.red, width: 2),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(32.0)),
-                                      borderSide: BorderSide(
-                                          color: Color(0xff004080), width: 2),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                //height: 70,
-                                padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-                                child: TextFormField(
-                                  obscureText: false,
-                                  focusNode: myFocusNode3,
-                                  keyboardType: TextInputType.number,
-                                  inputFormatters: <TextInputFormatter>[
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Please enter mobile number';
-                                    } else if (value.length < 10) {
-                                      return "Enter valid mobile number";
-                                    }
-                                    return null;
-                                  },
-                                  maxLength: 10,
-                                  controller: phonenumberController,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    counterText: "",
-                                    labelText: 'Phone No',
-
-                                    labelStyle: TextStyle(
-                                        color: myFocusNode3.hasFocus
-                                            ? Color(0xff004080)
-                                            : Colors.grey),
-                                    contentPadding: EdgeInsets.fromLTRB(
-                                        20.0, 15.0, 20.0, 15.0),
-                                    //  hintStyle: TextStyle(color:Colors.grey),
-                                    fillColor: Colors.white,
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(32.0)),
-                                      borderSide: BorderSide(
-                                          color: Color(0xff004080), width: 2),
-                                    ),
-                                    alignLabelWithHint: true,
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(32.0)),
-                                      borderSide: BorderSide(
-                                          color: Color(0xff004080), width: 2),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(32.0)),
-                                      borderSide: BorderSide(
-                                          color: Colors.red, width: 2),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(32.0)),
-                                      borderSide: BorderSide(
-                                          color: Color(0xff004080), width: 2),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                //    height: 70,
-                                padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-                                child: TextFormField(
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Please enter password';
-                                    }
-                                    return null;
-                                  },
-                                  obscureText: true,
-                                  focusNode: myFocusNode4,
-                                  controller: passwordController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Password',
-                                    labelStyle: TextStyle(
-                                        color: myFocusNode4.hasFocus
-                                            ? Color(0xff004080)
-                                            : Colors.grey),
-                                    contentPadding: EdgeInsets.fromLTRB(
-                                        20.0, 15.0, 20.0, 15.0),
-                                    fillColor: Colors.white,
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(32.0)),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(32.0)),
-                                      borderSide: BorderSide(
-                                          color: Color(0xff004080), width: 2),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(32.0)),
-                                      borderSide: BorderSide(
-                                          color: Colors.red, width: 2),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(32.0)),
-                                      borderSide: BorderSide(
-                                          color: Color(0xff004080), width: 2),
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                              /*           Container(
-                padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
-                child:  Text('Email',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 17,
-                    color: Colors.grey,
-                  ),
-                ),),
-              Container(
-                padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                child:  TextFormField(
-                  validator: (value) {
-                    if (value!.isEmpty ) {
-                      return 'Please enter email Id';
-                    }
-                    return null;
-                  },
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32.0)
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                      borderSide: BorderSide(color: Color(0xff004080), width: 2),
-
-                    ),
-                  ),
-                ),),*/
-                              /*  Container(
-                padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
-                child:  Text('Mobile',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 17,
-                    color: Colors.grey,
-                  ),
-                ),),
-              Container(
-                padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                child:  TextFormField(
-                  controller: phonenumberController,
-                  maxLength: 10,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
-                  validator: (value) {
-                    if (value!.isEmpty ) {
-                      return 'Please enter mobile number';
-                    } else if (value.length < 10){
-                      return "Enter valid mobile number";
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    counterText: "",
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32.0)
-
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                      borderSide: BorderSide(color: Color(0xff004080), width: 2),
-
-                    ),
-                  ),
-                ),),
-              Container(
-                padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
-                child: Text('Password',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 17,
-                    color: Colors.grey,
-                  ),
-                ),),
-              Container(
-                padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                child: TextFormField(
-                  validator: (value) {
-                    if (value!.isEmpty ) {
-                      return 'Please enter password';
-                    }
-                    return null;
-                  },
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32.0)
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                      borderSide: BorderSide(color: Color(0xff004080), width: 2),
-
-                    ),
-                  ),
-
-                ),)*/
-                            ])),
-                    Container(
-                        height: 90,
-                        padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
-                        child: RaisedButton(
-                          onPressed: () => {
-                            /*        if(usernameController.text == ""){
-                        _showMessageInScaffold("please enter name"),
-                      },
-                      if(emailController.text == ""){
-                        _showMessageInScaffold("please enter email"),
-                      },if (emailController.text.length < 10){
-                        _showMessageInScaffold("please enter valid email id"),
-                      },
-                      if(phonenumberController.text== ""){
-                        _showMessageInScaffold  ("please enter mobile number"),
-                      },
-                      if(phonenumberController.text.length < 10){
-                        _showMessageInScaffold  ("please enter valid mobile number"),
-                      },
-                      if(passwordController.text== ""){
-                        _showMessageInScaffold("please enter password"),
-                      },*/
-                            profilepic(),
-                            updateprofile(),
-                          },
-                          textColor: Colors.white,
-                          color: Color(0xff004080),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular((32.0))),
-                          child: Text(
-                            'SAVE',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        )),
+                            ]),
+                          )),
+                    ]),
+                    //       Form(
+                    //           key: _formKey,
+                    //           child: Column(mainAxisSize: MainAxisSize.min,
+                    //               //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //               children: [
+                    //                 Align(
+                    //                   alignment: Alignment.centerLeft,
+                    //                   child: Padding(
+                    //                       padding:
+                    //                           EdgeInsets.only(left: 25.0, top: 8.0),
+                    //                       child: new Text(
+                    //                         'Name',
+                    //                         // '${mobile_test}',
+                    //                         style: TextStyle(
+                    //                           fontSize: 18.0,
+                    //                           fontFamily: 'Montserrat',
+                    //                           color: Colors.black,
+                    //                           //    fontWeight: FontWeight.bold
+                    //                         ),
+                    //                       )),
+                    //                 ),
+                    //                 Padding(
+                    //                   padding: EdgeInsets.only(
+                    //                       left: 25.0, right: 25, bottom: 5.0),
+                    //                   child: new TextFormField(
+                    //                     controller: usernameController,
+                    //                     obscureText: false,
+                    //                     autofocus: false,
+                    //                     focusNode: myFocusNode1,
+                    //                     validator: (value) {
+                    //                       if (value!.isEmpty) {
+                    //                         return 'Please enter name';
+                    //                       }
+                    //                       return null;
+                    //                     },
+                    //                     decoration: InputDecoration(
+                    //                       border: UnderlineInputBorder(
+                    //                         borderSide: BorderSide(
+                    //                             color: Colors.black26, width: 1),
+                    //                       ),
+                    //                       focusedBorder: UnderlineInputBorder(
+                    //                         borderSide: BorderSide(
+                    //                             color: Colors.black26, width: 1),
+                    //                       ),
+                    //                       errorBorder: UnderlineInputBorder(
+                    //                         borderSide: BorderSide(
+                    //                             color: Colors.red, width: 1),
+                    //                       ),
+                    //                       focusedErrorBorder: UnderlineInputBorder(
+                    //                         borderSide: BorderSide(
+                    //                             color: Colors.black26, width: 1),
+                    //                       ),
+                    //                     ),
+                    //                   ),
+                    //                 ),
+                    //
+                    //                 // Container(
+                    //                 //   //height: 70,
+                    //                 //   padding: EdgeInsets.fromLTRB(20, 30, 20, 0),
+                    //                 //   child: TextFormField(
+                    //                 //     obscureText: false,
+                    //                 //     focusNode: myFocusNode1,
+                    //                 //     validator: (value) {
+                    //                 //       if (value!.isEmpty) {
+                    //                 //         return 'Please enter name';
+                    //                 //       }
+                    //                 //       return null;
+                    //                 //     },
+                    //                 //     maxLength: 10,
+                    //                 //     controller: usernameController,
+                    //                 //     decoration: InputDecoration(
+                    //                 //       border: InputBorder.none,
+                    //                 //       counterText: "",
+                    //                 //       labelText: 'Name',
+                    //                 //       labelStyle: TextStyle(
+                    //                 //           color: myFocusNode1.hasFocus
+                    //                 //               ? Color(0xff004080)
+                    //                 //               : Colors.grey),
+                    //                 //       contentPadding: EdgeInsets.fromLTRB(
+                    //                 //           20.0, 15.0, 20.0, 15.0),
+                    //                 //       //  hintStyle: TextStyle(color:Colors.grey),
+                    //                 //       fillColor: Colors.white,
+                    //                 //       enabledBorder: OutlineInputBorder(
+                    //                 //         borderRadius: BorderRadius.all(
+                    //                 //             Radius.circular(32.0)),
+                    //                 //         borderSide: BorderSide(
+                    //                 //             color: Colors.grey, width: 2),
+                    //                 //       ),
+                    //                 //       alignLabelWithHint: true,
+                    //                 //       focusedBorder: OutlineInputBorder(
+                    //                 //         borderRadius: BorderRadius.all(
+                    //                 //             Radius.circular(32.0)),
+                    //                 //         borderSide: BorderSide(
+                    //                 //             color: Colors.grey, width: 2),
+                    //                 //       ),
+                    //                 //       errorBorder: OutlineInputBorder(
+                    //                 //         borderRadius: BorderRadius.all(
+                    //                 //             Radius.circular(32.0)),
+                    //                 //         borderSide: BorderSide(
+                    //                 //             color: Colors.red, width: 2),
+                    //                 //       ),
+                    //                 //       focusedErrorBorder: OutlineInputBorder(
+                    //                 //         borderRadius: BorderRadius.all(
+                    //                 //             Radius.circular(32.0)),
+                    //                 //         borderSide: BorderSide(
+                    //                 //             color: Colors.grey, width: 2),
+                    //                 //       ),
+                    //                 //     ),
+                    //                 //   ),
+                    //                 // ),
+                    //                 Align(
+                    //                   alignment: Alignment.centerLeft,
+                    //                   child: Padding(
+                    //                       padding:
+                    //                           EdgeInsets.only(left: 25.0, top: 8.0),
+                    //                       child: new Text(
+                    //                         'Email ID',
+                    //                         // '${mobile_test}',
+                    //                         style: TextStyle(
+                    //                           fontSize: 18.0,
+                    //                           fontFamily: 'Montserrat',
+                    //                           color: Colors.black,
+                    //                           //    fontWeight: FontWeight.bold
+                    //                         ),
+                    //                       )),
+                    //                 ),
+                    //                 Padding(
+                    //                   padding: EdgeInsets.only(
+                    //                       left: 25.0, right: 25, bottom: 5.0),
+                    //                   child: new TextFormField(
+                    //                     validator: (value) {
+                    //                       if (value!.isEmpty) {
+                    //                         return 'Please enter email';
+                    //                       }
+                    //                       return null;
+                    //                     },
+                    //                     obscureText: false,
+                    //                     focusNode: myFocusNode2,
+                    //                     autofocus: false,
+                    //                     controller: emailController,
+                    //                     decoration: InputDecoration(
+                    //                       //  labelText: 'Email ID',
+                    //                       border: UnderlineInputBorder(
+                    //                         borderSide: BorderSide(
+                    //                             color: Colors.black26, width: 1),
+                    //                       ),
+                    //                       focusedBorder: UnderlineInputBorder(
+                    //                         borderSide: BorderSide(
+                    //                             color: Colors.black26, width: 1),
+                    //                       ),
+                    //                       errorBorder: UnderlineInputBorder(
+                    //                         borderSide: BorderSide(
+                    //                             color: Colors.red, width: 1),
+                    //                       ),
+                    //                       focusedErrorBorder: UnderlineInputBorder(
+                    //                         borderSide: BorderSide(
+                    //                             color: Colors.black26, width: 1),
+                    //                       ),
+                    //                     ),
+                    //                   ),
+                    //                 ),
+                    //                 //
+                    //                 // Container(
+                    //                 //   //  height: 70,
+                    //                 //   padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+                    //                 //   child: TextFormField(
+                    //                 //     validator: (value) {
+                    //                 //       if (value!.isEmpty) {
+                    //                 //         return 'Please enter email';
+                    //                 //       }
+                    //                 //       return null;
+                    //                 //     },
+                    //                 //     obscureText: false,
+                    //                 //     focusNode: myFocusNode2,
+                    //                 //     controller: emailController,
+                    //                 //     decoration: InputDecoration(
+                    //                 //       labelText: 'Email ID',
+                    //                 //       labelStyle: TextStyle(
+                    //                 //           color: myFocusNode2.hasFocus
+                    //                 //               ? Color(0xff004080)
+                    //                 //               : Colors.grey),
+                    //                 //       contentPadding: EdgeInsets.fromLTRB(
+                    //                 //           20.0, 15.0, 20.0, 15.0),
+                    //                 //       fillColor: Colors.white,
+                    //                 //       border: OutlineInputBorder(
+                    //                 //           borderRadius:
+                    //                 //               BorderRadius.circular(32.0)),
+                    //                 //       focusedBorder: OutlineInputBorder(
+                    //                 //         borderRadius: BorderRadius.all(
+                    //                 //             Radius.circular(32.0)),
+                    //                 //         borderSide: BorderSide(
+                    //                 //             color: Colors.grey, width: 2),
+                    //                 //       ),
+                    //                 //       errorBorder: OutlineInputBorder(
+                    //                 //         borderRadius: BorderRadius.all(
+                    //                 //             Radius.circular(32.0)),
+                    //                 //         borderSide: BorderSide(
+                    //                 //             color: Colors.red, width: 2),
+                    //                 //       ),
+                    //                 //       focusedErrorBorder: OutlineInputBorder(
+                    //                 //         borderRadius: BorderRadius.all(
+                    //                 //             Radius.circular(32.0)),
+                    //                 //         borderSide: BorderSide(
+                    //                 //             color: Colors.grey, width: 2),
+                    //                 //       ),
+                    //                 //     ),
+                    //                 //   ),
+                    //                 // ),
+                    //                 Align(
+                    //                   alignment: Alignment.centerLeft,
+                    //                   child: Padding(
+                    //                       padding:
+                    //                           EdgeInsets.only(left: 25.0, top: 8.0),
+                    //                       child: new Text(
+                    //                         'Phone number',
+                    //                         // '${mobile_test}',
+                    //                         style: TextStyle(
+                    //                           fontSize: 18.0,
+                    //                           fontFamily: 'Montserrat',
+                    //                           color: Colors.black,
+                    //                           //    fontWeight: FontWeight.bold
+                    //                         ),
+                    //                       )),
+                    //                 ),
+                    //                 Padding(
+                    //                   padding: EdgeInsets.only(
+                    //                       left: 25.0, right: 25, bottom: 5.0),
+                    //                   child: new TextFormField(
+                    //                     obscureText: false,
+                    //                     focusNode: myFocusNode3,
+                    //                     keyboardType: TextInputType.number,
+                    //                     inputFormatters: <TextInputFormatter>[
+                    //                       FilteringTextInputFormatter.digitsOnly
+                    //                     ],
+                    //                     validator: (value) {
+                    //                       if (value!.isEmpty) {
+                    //                         return 'Please enter mobile number';
+                    //                       } else if (value.length < 10) {
+                    //                         return "Enter valid mobile number";
+                    //                       }
+                    //                       return null;
+                    //                     },
+                    //                     maxLength: 10,
+                    //                     autofocus: false,
+                    //                     controller: phonenumberController,
+                    //                     decoration: InputDecoration(
+                    //                       counterText: "",
+                    //                       border: UnderlineInputBorder(
+                    //                         borderSide: BorderSide(
+                    //                             color: Colors.black26, width: 1),
+                    //                       ),
+                    //                       focusedBorder: UnderlineInputBorder(
+                    //                         borderSide: BorderSide(
+                    //                             color: Colors.black26, width: 1),
+                    //                       ),
+                    //                       errorBorder: UnderlineInputBorder(
+                    //                         borderSide: BorderSide(
+                    //                             color: Colors.red, width: 1),
+                    //                       ),
+                    //                       focusedErrorBorder: UnderlineInputBorder(
+                    //                         borderSide: BorderSide(
+                    //                             color: Colors.black26, width: 1),
+                    //                       ),
+                    //                     ),
+                    //                   ),
+                    //                 ),
+                    //                 // Container(
+                    //                 //   //height: 70,
+                    //                 //   padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+                    //                 //   child: TextFormField(
+                    //                 //     obscureText: false,
+                    //                 //     focusNode: myFocusNode3,
+                    //                 //     keyboardType: TextInputType.number,
+                    //                 //     inputFormatters: <TextInputFormatter>[
+                    //                 //       FilteringTextInputFormatter.digitsOnly
+                    //                 //     ],
+                    //                 //     validator: (value) {
+                    //                 //       if (value!.isEmpty) {
+                    //                 //         return 'Please enter mobile number';
+                    //                 //       } else if (value.length < 10) {
+                    //                 //         return "Enter valid mobile number";
+                    //                 //       }
+                    //                 //       return null;
+                    //                 //     },
+                    //                 //     maxLength: 10,
+                    //                 //     controller: phonenumberController,
+                    //                 //     decoration: InputDecoration(
+                    //                 //       border: InputBorder.none,
+                    //                 //       counterText: "",
+                    //                 //       labelText: 'Phone No',
+                    //                 //
+                    //                 //       labelStyle: TextStyle(
+                    //                 //           color: myFocusNode3.hasFocus
+                    //                 //               ? Color(0xff004080)
+                    //                 //               : Colors.grey),
+                    //                 //       contentPadding: EdgeInsets.fromLTRB(
+                    //                 //           20.0, 15.0, 20.0, 15.0),
+                    //                 //       //  hintStyle: TextStyle(color:Colors.grey),
+                    //                 //       fillColor: Colors.white,
+                    //                 //       enabledBorder: OutlineInputBorder(
+                    //                 //         borderRadius: BorderRadius.all(
+                    //                 //             Radius.circular(32.0)),
+                    //                 //         borderSide: BorderSide(
+                    //                 //             color: Colors.grey, width: 2),
+                    //                 //       ),
+                    //                 //       alignLabelWithHint: true,
+                    //                 //       focusedBorder: OutlineInputBorder(
+                    //                 //         borderRadius: BorderRadius.all(
+                    //                 //             Radius.circular(32.0)),
+                    //                 //         borderSide: BorderSide(
+                    //                 //             color: Colors.grey, width: 2),
+                    //                 //       ),
+                    //                 //       errorBorder: OutlineInputBorder(
+                    //                 //         borderRadius: BorderRadius.all(
+                    //                 //             Radius.circular(32.0)),
+                    //                 //         borderSide: BorderSide(
+                    //                 //             color: Colors.red, width: 2),
+                    //                 //       ),
+                    //                 //       focusedErrorBorder: OutlineInputBorder(
+                    //                 //         borderRadius: BorderRadius.all(
+                    //                 //             Radius.circular(32.0)),
+                    //                 //         borderSide: BorderSide(
+                    //                 //             color: Colors.grey, width: 2),
+                    //                 //       ),
+                    //                 //     ),
+                    //                 //   ),
+                    //                 // ),
+                    //                 Align(
+                    //                   alignment: Alignment.centerLeft,
+                    //                   child: Padding(
+                    //                       padding:
+                    //                           EdgeInsets.only(left: 25.0, top: 8.0),
+                    //                       child: new Text(
+                    //                         'Password',
+                    //                         style: TextStyle(
+                    //                           fontSize: 18.0,
+                    //                           fontFamily: 'Montserrat',
+                    //                           color: Colors.black,
+                    //                           //    fontWeight: FontWeight.bold
+                    //                         ),
+                    //                       )),
+                    //                 ),
+                    //                 Padding(
+                    //                   padding: EdgeInsets.only(
+                    //                       left: 25.0, right: 25, bottom: 5.0),
+                    //                   child: new TextFormField(
+                    //                     validator: (value) {
+                    //                       if (value!.isEmpty) {
+                    //                         return 'Please enter password';
+                    //                       }
+                    //                       return null;
+                    //                     },
+                    //                     obscureText: true,
+                    //                     focusNode: myFocusNode4,
+                    //                     controller: passwordController,
+                    //                     autofocus: false,
+                    //                     decoration: InputDecoration(
+                    //                       counterText: "",
+                    //                       border: UnderlineInputBorder(
+                    //                         borderSide: BorderSide(
+                    //                             color: Colors.black26, width: 1),
+                    //                       ),
+                    //                       focusedBorder: UnderlineInputBorder(
+                    //                         borderSide: BorderSide(
+                    //                             color: Colors.black26, width: 1),
+                    //                       ),
+                    //                       errorBorder: UnderlineInputBorder(
+                    //                         borderSide: BorderSide(
+                    //                             color: Colors.red, width: 1),
+                    //                       ),
+                    //                       focusedErrorBorder: UnderlineInputBorder(
+                    //                         borderSide: BorderSide(
+                    //                             color: Colors.black26, width: 1),
+                    //                       ),
+                    //                     ),
+                    //                   ),
+                    //                 ),
+                    //                 // Container(
+                    //                 //   //    height: 70,
+                    //                 //   padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+                    //                 //   child: TextFormField(
+                    //                 //     validator: (value) {
+                    //                 //       if (value!.isEmpty) {
+                    //                 //         return 'Please enter password';
+                    //                 //       }
+                    //                 //       return null;
+                    //                 //     },
+                    //                 //     obscureText: true,
+                    //                 //     focusNode: myFocusNode4,
+                    //                 //     controller: passwordController,
+                    //                 //     decoration: InputDecoration(
+                    //                 //       labelText: 'Password',
+                    //                 //       labelStyle: TextStyle(
+                    //                 //           color: myFocusNode4.hasFocus
+                    //                 //               ? Color(0xff004080)
+                    //                 //               : Colors.grey),
+                    //                 //       contentPadding: EdgeInsets.fromLTRB(
+                    //                 //           20.0, 15.0, 20.0, 15.0),
+                    //                 //       fillColor: Colors.white,
+                    //                 //       border: OutlineInputBorder(
+                    //                 //           borderRadius:
+                    //                 //               BorderRadius.circular(32.0)),
+                    //                 //       focusedBorder: OutlineInputBorder(
+                    //                 //         borderRadius: BorderRadius.all(
+                    //                 //             Radius.circular(32.0)),
+                    //                 //         borderSide: BorderSide(
+                    //                 //             color: Colors.grey, width: 2),
+                    //                 //       ),
+                    //                 //       errorBorder: OutlineInputBorder(
+                    //                 //         borderRadius: BorderRadius.all(
+                    //                 //             Radius.circular(32.0)),
+                    //                 //         borderSide: BorderSide(
+                    //                 //             color: Colors.red, width: 2),
+                    //                 //       ),
+                    //                 //       focusedErrorBorder: OutlineInputBorder(
+                    //                 //         borderRadius: BorderRadius.all(
+                    //                 //             Radius.circular(32.0)),
+                    //                 //         borderSide: BorderSide(
+                    //                 //             color: Colors.grey, width: 2),
+                    //                 //       ),
+                    //                 //     ),
+                    //                 //   ),
+                    //                 // ),
+                    //
+                    //                 /*           Container(
+                    //   padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
+                    //   child:  Text('Email',
+                    //     textAlign: TextAlign.left,
+                    //     style: TextStyle(
+                    //       fontSize: 17,
+                    //       color: Colors.grey,
+                    //     ),
+                    //   ),),
+                    // Container(
+                    //   padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                    //   child:  TextFormField(
+                    //     validator: (value) {
+                    //       if (value!.isEmpty ) {
+                    //         return 'Please enter email Id';
+                    //       }
+                    //       return null;
+                    //     },
+                    //     controller: emailController,
+                    //     decoration: InputDecoration(
+                    //       contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                    //       border: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(32.0)
+                    //       ),
+                    //       focusedBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                    //         borderSide: BorderSide(color: Color(0xff004080), width: 2),
+                    //
+                    //       ),
+                    //     ),
+                    //   ),),*/
+                    //                 /*  Container(
+                    //   padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
+                    //   child:  Text('Mobile',
+                    //     textAlign: TextAlign.left,
+                    //     style: TextStyle(
+                    //       fontSize: 17,
+                    //       color: Colors.grey,
+                    //     ),
+                    //   ),),
+                    // Container(
+                    //   padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                    //   child:  TextFormField(
+                    //     controller: phonenumberController,
+                    //     maxLength: 10,
+                    //     keyboardType: TextInputType.number,
+                    //     inputFormatters: <TextInputFormatter>[
+                    //       FilteringTextInputFormatter.digitsOnly
+                    //     ],
+                    //     validator: (value) {
+                    //       if (value!.isEmpty ) {
+                    //         return 'Please enter mobile number';
+                    //       } else if (value.length < 10){
+                    //         return "Enter valid mobile number";
+                    //       }
+                    //       return null;
+                    //     },
+                    //     decoration: InputDecoration(
+                    //       counterText: "",
+                    //       contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                    //
+                    //       border: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(32.0)
+                    //
+                    //       ),
+                    //       focusedBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                    //         borderSide: BorderSide(color: Color(0xff004080), width: 2),
+                    //
+                    //       ),
+                    //     ),
+                    //   ),),
+                    // Container(
+                    //   padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
+                    //   child: Text('Password',
+                    //     textAlign: TextAlign.left,
+                    //     style: TextStyle(
+                    //       fontSize: 17,
+                    //       color: Colors.grey,
+                    //     ),
+                    //   ),),
+                    // Container(
+                    //   padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                    //   child: TextFormField(
+                    //     validator: (value) {
+                    //       if (value!.isEmpty ) {
+                    //         return 'Please enter password';
+                    //       }
+                    //       return null;
+                    //     },
+                    //     controller: passwordController,
+                    //     obscureText: true,
+                    //     decoration: InputDecoration(
+                    //       contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                    //
+                    //       border: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(32.0)
+                    //       ),
+                    //       focusedBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                    //         borderSide: BorderSide(color: Color(0xff004080), width: 2),
+                    //
+                    //       ),
+                    //     ),
+                    //
+                    //   ),)*/
+                    //               ])),
+                    //       Container(
+                    //           height: 90,
+                    //           padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
+                    //           child: RaisedButton(
+                    //             onPressed: () => {
+                    //               /*        if(usernameController.text == ""){
+                    //           _showMessageInScaffold("please enter name"),
+                    //         },
+                    //         if(emailController.text == ""){
+                    //           _showMessageInScaffold("please enter email"),
+                    //         },if (emailController.text.length < 10){
+                    //           _showMessageInScaffold("please enter valid email id"),
+                    //         },
+                    //         if(phonenumberController.text== ""){
+                    //           _showMessageInScaffold  ("please enter mobile number"),
+                    //         },
+                    //         if(phonenumberController.text.length < 10){
+                    //           _showMessageInScaffold  ("please enter valid mobile number"),
+                    //         },
+                    //         if(passwordController.text== ""){
+                    //           _showMessageInScaffold("please enter password"),
+                    //         },*/
+                    //               profilepic(),
+                    //               updateprofile(),
+                    //             },
+                    //             textColor: Colors.white,
+                    //             color: Color(0xffff7000),
+                    //             shape: RoundedRectangleBorder(
+                    //                 borderRadius: BorderRadius.circular((32.0))),
+                    //             child: Text(
+                    //               'SAVE',
+                    //               style: TextStyle(fontSize: 20),
+                    //             ),
+                    //           )),
                   ])),
               Container(
                   alignment: Alignment.bottomCenter,
