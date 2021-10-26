@@ -560,7 +560,7 @@ class _LoginPageState extends State<LoginPage>
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(
-                                      top: 11.0, 
+                                      top: 11.0,
                                       bottom: 11.0,
                                       left: 25.0,
                                       right: 25.0),
