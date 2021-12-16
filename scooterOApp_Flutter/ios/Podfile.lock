@@ -1,0 +1,112 @@
+PODS:
+  - barcode_scan (0.0.1):
+    - Flutter
+    - MTBBarcodeScanner
+    - SwiftProtobuf
+  - connectivity (0.0.1):
+    - Flutter
+    - Reachability
+  - Flutter (1.0.0)
+  - geolocation (0.0.1):
+    - Flutter
+    - streams_channel
+  - "geolocator (5.3.2+2)":
+    - Flutter
+  - google_maps_flutter (0.0.1):
+    - Flutter
+    - GoogleMaps (< 3.10)
+  - GoogleMaps (3.9.0):
+    - GoogleMaps/Maps (= 3.9.0)
+  - GoogleMaps/Base (3.9.0)
+  - GoogleMaps/Maps (3.9.0):
+    - GoogleMaps/Base
+  - location (0.0.1):
+    - Flutter
+  - "location_permissions (3.0.0+1)":
+    - Flutter
+  - MTBBarcodeScanner (5.0.11)
+  - "permission_handler (4.4.0+hotfix.4)":
+    - Flutter
+  - qrcode (0.0.1):
+    - Flutter
+  - Reachability (3.2)
+  - shared_preferences (0.0.1):
+    - Flutter
+  - sms (0.0.1):
+    - Flutter
+  - streams_channel (0.0.1):
+    - Flutter
+  - SwiftProtobuf (1.15.0)
+
+DEPENDENCIES:
+  - barcode_scan (from `.symlinks/plugins/barcode_scan/ios`)
+  - connectivity (from `.symlinks/plugins/connectivity/ios`)
+  - Flutter (from `Flutter`)
+  - geolocation (from `.symlinks/plugins/geolocation/ios`)
+  - geolocator (from `.symlinks/plugins/geolocator/ios`)
+  - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
+  - location (from `.symlinks/plugins/location/ios`)
+  - location_permissions (from `.symlinks/plugins/location_permissions/ios`)
+  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+  - qrcode (from `.symlinks/plugins/qrcode/ios`)
+  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - sms (from `.symlinks/plugins/sms/ios`)
+  - streams_channel (from `.symlinks/plugins/streams_channel/ios`)
+
+SPEC REPOS:
+  trunk:
+    - GoogleMaps
+    - MTBBarcodeScanner
+    - Reachability
+    - SwiftProtobuf
+
+EXTERNAL SOURCES:
+  barcode_scan:
+    :path: ".symlinks/plugins/barcode_scan/ios"
+  connectivity:
+    :path: ".symlinks/plugins/connectivity/ios"
+  Flutter:
+    :path: Flutter
+  geolocation:
+    :path: ".symlinks/plugins/geolocation/ios"
+  geolocator:
+    :path: ".symlinks/plugins/geolocator/ios"
+  google_maps_flutter:
+    :path: ".symlinks/plugins/google_maps_flutter/ios"
+  location:
+    :path: ".symlinks/plugins/location/ios"
+  location_permissions:
+    :path: ".symlinks/plugins/location_permissions/ios"
+  permission_handler:
+    :path: ".symlinks/plugins/permission_handler/ios"
+  qrcode:
+    :path: ".symlinks/plugins/qrcode/ios"
+  shared_preferences:
+    :path: ".symlinks/plugins/shared_preferences/ios"
+  sms:
+    :path: ".symlinks/plugins/sms/ios"
+  streams_channel:
+    :path: ".symlinks/plugins/streams_channel/ios"
+
+SPEC CHECKSUMS:
+  barcode_scan: a5c27959edfafaa0c771905bad0b29d6d39e4479
+  connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  geolocation: c194aabfd0f48cd7d6041afa8ba6542aa5714dc2
+  geolocator: f7622e0e7e2a24718285b73916d60c4a54b9f5b6
+  google_maps_flutter: c7f9c73576de1fbe152a227bfd6e6c4ae8088619
+  GoogleMaps: 4b5346bddfe6911bb89155d43c903020170523ac
+  location: 3a2eed4dd2fab25e7b7baf2a9efefe82b512d740
+  location_permissions: 7e0f9aa0f60deb8ff93ddf0e2a164c7e8197bc94
+  MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
+  permission_handler: 8278954f2382902f63f00dd8828769c0bd6d511b
+  qrcode: 703d52352679d9b4284555e9a09c2157062f1989
+  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  sms: 1e6c3082da09f2a4961d61bc254cc86865993ffd
+  streams_channel: 16855ffd0568eded9563b2fec6a1bfa94420b353
+  SwiftProtobuf: 3320217e9d8fb75f36b40282e78c482640fd75dd
+
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+
+COCOAPODS: 1.10.1

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>325742840070-3p1a4qdhcdslp3c0cdf5757clg1ca5pu.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.325742840070-3p1a4qdhcdslp3c0cdf5757clg1ca5pu</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBLtI6wOGkaVncnOcBLgzFR6DzJa7EHQWc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>325742840070</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.app.scooteroapp</string>
+	<key>PROJECT_ID</key>
+	<string>scootero-291610</string>
+	<key>STORAGE_BUCKET</key>
+	<string>scootero-291610.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:325742840070:ios:b19afc8f2fd5e9cd28f687</string>
+	<key>DATABASE_URL</key>
+	<string>https://scootero-291610.firebaseio.com</string>
+</dict>
+</plist>

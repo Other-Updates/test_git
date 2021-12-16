@@ -1,0 +1,63 @@
+name: scotto
+description: A new Flutter application.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.0
+  splashscreen: ^1.2.0
+  http: ^0.12.0+2
+  flutter_rating_bar: ^3.0.1+1
+  shared_preferences: ^0.5.12
+  flutter_otp: ^0.3.2
+  fluttertoast: ^6.0.1
+  google_maps_flutter: ^0.5.25
+  geolocator:
+  intl_translation: ^0.17.1
+  provider: ^3.0.0
+  location: ^2.3.5
+  geolocation: ^1.1.2
+  connectivity: ^0.4.3+2
+  barcode_scan: ^3.0.1
+  qrcode:
+  screen_loader: ^2.0.1
+  permission_handler: ^4.4.0+hotfix.2
+  local_auth: ^0.4.0+1
+  geocoding:
+  flutter_polyline_points:
+  sqflite: ^1.2.0
+  path_provider: ^1.5.1
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons:
+  mask_text_input_formatter: ^2.0.0
+
+# The following section is specific to Flutter.
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+
+flutter_icons:
+  android: true
+  image_path_android: "assets/images/image.png"
+  ios: true
+  image_path_ios: "assets/images/image.png"
+
+
+
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: fonts/Montserrat-Medium.ttf
+          weight: 700
