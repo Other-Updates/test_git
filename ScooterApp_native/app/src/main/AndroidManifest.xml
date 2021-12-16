@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.app.scooteroapp">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission
+        android:name="android.permission.READ_PHONE_STATE"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.ACCESS_BACKGROUND_LOCATION"
+        tools:node="remove" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+
+        <activity android:name=".activities.ResetpassActivity" />
+        <activity android:name=".activities.MainActivity" />
+
+        <activity
+            android:name=".activities.BiometricActivity"
+            android:theme="@style/FullScreen" />
+        <activity
+            android:name=".payment.PayActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <data android:scheme="@string/custom_ui_callback_scheme" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.ChangeMobileNumberActivity"
+            android:theme="@style/FullScreen" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDwpXSYswuXaJyfDoBxXTxYeAYRwzZIjGE" />
+
+        <service
+            android:name="com.oppwa.mobile.connect.service.ConnectService"
+            android:exported="false" />
+<activity android:name="com.app.scooterapp.activities.DashboardActivity"
+    android:label="@string/title_activity_dashboard" />
+        <activity android:name=".activities.RideRentPostActivity" />
+        <activity android:name=".activities.PromoCodeActivity" />
+        <activity android:name=".activities.ReferActivity" />
+        <activity android:name=".activities.ChangeEmailActivity" />
+        <activity android:name=".activities.SettingsActivity" />
+        <activity android:name=".activities.PaymentsActivity" />
+        <activity android:name=".activities.WalletActivity" />
+        <activity android:name=".activities.ChangePasswordActivity" />
+        <activity android:name=".activities.EditProfileActivity" />
+        <activity android:name=".activities.ProfileActivity" />
+        <activity android:name=".activities.InvoiceDetailsActivity" />
+        <activity android:name=".activities.InvoiceListActivity" />
+        <activity
+            android:name=".activities.FeedbackActivity"
+            android:theme="@style/FullScreen" />
+        <activity android:name=".activities.RideRentPreActivity" />
+        <activity android:name=".activities.RechargeOptionsActivity" />
+        <activity android:name=".activities.RechargeActivity" />
+        <activity android:name=".activities.RidePrePaidActivity" />
+        <activity android:name=".activities.RidePostPaidActivity" />
+        <activity android:name=".activities.DebitCardActivity" />
+        <activity android:name=".activities.ChooseRiderPlanActivity" />
+        <activity android:name=".activities.PaymentGatewayActivity" />
+        <activity android:name=".activities.AddCreditCardActivity" />
+        <activity android:name=".activities.AddPaymentMethodActivity" />
+        <activity android:name=".activities.PaymentMethodActivity" />
+        <activity android:name=".activities.ManualBarcodeActivity" />
+        <activity android:name=".activities.ScanActivity" />
+        <activity
+            android:name=".activities.AcknowledgementActivity"
+            android:theme="@style/FullScreen" />
+        <activity
+            android:name=".activities.LoginActivity"
+            android:theme="@style/FullScreen" />
+        <activity android:name=".activities.ChangeNumberActivity" />
+        <activity
+            android:name=".activities.ContactSupportActivity"
+            android:theme="@style/FullScreen" />
+        <activity
+            android:name=".activities.OTPAckActivity"
+            android:theme="@style/FullScreen" />
+        <activity
+            android:name=".activities.OTPActivity"
+            android:theme="@style/FullScreen" />
+        <activity
+            android:name=".activities.TutorialActivity"
+            android:theme="@style/FullScreen" />
+        <activity
+            android:name=".activities.RegistrationActivity"
+            android:theme="@style/FullScreen" />
+        <activity
+            android:name=".activities.LanguageActivity"
+            android:theme="@style/FullScreen" />
+        <activity
+            android:name=".activities.SplashActivity"
+            android:theme="@style/FullScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

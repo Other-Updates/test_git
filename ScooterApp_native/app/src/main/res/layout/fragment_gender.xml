@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/gender"
+        style="@style/SOTitle"
+        android:paddingLeft="@dimen/_8sdp"
+        android:paddingTop="@dimen/_8sdp"/>
+
+    <TextView
+        android:id="@+id/txtMale"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/male"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        android:padding="@dimen/_8sdp"
+        android:textSize="@dimen/_15sdp"
+        android:fontFamily="@font/montserrat_medium"/>
+    <TextView
+        android:id="@+id/txtFemale"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/female"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtMale"
+        android:padding="@dimen/_8sdp"
+        android:textSize="@dimen/_15sdp"
+        android:fontFamily="@font/montserrat_medium"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

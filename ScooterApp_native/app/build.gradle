@@ -1,0 +1,126 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+    defaultConfig {
+        applicationId "com.app.scooteroapp"
+        minSdkVersion 23
+        targetSdkVersion 29
+        versionCode 4
+        versionName "1.0.4"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildFeatures {
+        dataBinding true
+        viewBinding true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures{
+        viewBinding true
+    }
+}
+
+ext {
+    archVersion = '1.1.0'
+    retrofitVersion = '2.6.0'
+    coroutineVersion = '1.0.0'
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.3.1'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'commons-codec:commons-codec:1.9'
+    implementation 'com.intuit.sdp:sdp-android:1.0.4'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview-selection:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation "androidx.security:security-crypto:1.0.0-alpha02"
+
+    // Room
+    implementation "android.arch.lifecycle:extensions:$archVersion"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.navigation:navigation-fragment:2.3.0'
+    implementation 'androidx.navigation:navigation-ui:2.3.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.0'
+    kapt "android.arch.lifecycle:compiler:$archVersion"
+    implementation "android.arch.persistence.room:runtime:$archVersion"
+    kapt "android.arch.persistence.room:compiler:$archVersion"
+    implementation "android.arch.persistence.room:rxjava2:$archVersion"
+
+    //Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.6'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+
+    //FCM
+    implementation 'com.google.firebase:firebase-messaging:17.1.0'
+    implementation 'com.google.maps.android:android-maps-utils:0.5'
+
+    //Fingerprint
+    implementation 'androidx.biometric:biometric:1.0.0'
+
+    //Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
+
+    //Archite
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+
+    //Gif
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
+
+    //Tutorial
+    implementation 'com.github.ronaldsmartin:Material-ViewPagerIndicator:1.0.4'
+    implementation 'com.google.android.gms:play-services-vision:20.1.2'
+    implementation 'com.google.android.gms:play-services-drive:17.0.0'
+    implementation 'com.google.android.gms:play-services-auth:18.1.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.firebase:firebase-analytics-ktx:17.5.0'
+    implementation 'com.budiyev.android:code-scanner:2.1.0'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation project(':oppwa.mobile')
+    implementation 'com.google.android.gms:play-services-wallet:16.0.1'
+    implementation 'androidx.biometric:biometric:1.0.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.maps.android:android-maps-utils:2.2.3'
+    compile 'org.jetbrains.anko:anko-sdk15:0.8.2'
+    compile 'com.beust:klaxon:0.30'
+    compile 'com.parse:parse-android:1.10.0'
+
+
+    implementation 'com.github.malikdawar:drawroute:1.1-rx'
+    implementation 'com.github.jd-alexander:library:1.1.0'
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+}

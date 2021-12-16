@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_green"
+    tools:context=".activities.FeedbackActivity">
+
+    <ImageView
+        android:id="@+id/btnClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_close_gray" />
+
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnClose"
+        android:text="@string/feedbackquestion"
+        style="@style/SOTitle"/>
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtTitle"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:rating="5"
+        android:progressTint="@color/green"/>
+
+    <LinearLayout
+        android:id="@+id/llOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ratingBar"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:visibility="gone"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btnWont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_feedback_unselect"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginRight="8dp"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/feedback_unselect"
+            android:text="Won't Start"/>
+        <Button
+            android:id="@+id/btnJerky"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_feedback_unselect"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginRight="8dp"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/feedback_unselect"
+            android:text="Jerky"/>
+        <Button
+            android:id="@+id/btnSlow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_feedback_unselect"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/feedback_unselect"
+            android:text="Slow"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llTwo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llOne"
+        android:visibility="gone"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btnDamaged"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_feedback_unselect"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/feedback_unselect"
+            android:layout_marginRight="8dp"
+            android:text="Damaged"/>
+        <Button
+            android:id="@+id/btnDirty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_feedback_unselect"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginRight="8dp"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/feedback_unselect"
+            android:text="Dirty"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="14dp"
+        android:textColor="@color/font_color_5"
+        android:textSize="16sp"
+        android:text="@string/feedbacktitle"
+        android:fontFamily="@font/montserrat_medium"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llTwo" />
+
+    <EditText
+        android:id="@+id/edtFeedback"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:padding="@dimen/_8sdp"
+        android:ems="10"
+        android:fontFamily="@font/montserrat_medium"
+        android:hint="@string/feedbackhint"
+        android:background="@drawable/bg_edt"
+        android:gravity="start|top"
+        android:textSize="14sp"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/submit"
+        style="@style/SOButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtFeedback" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

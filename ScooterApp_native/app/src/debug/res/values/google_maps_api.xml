@@ -1,0 +1,25 @@
+<resources>
+    <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=BE:71:37:79:9F:33:D8:2B:EA:41:99:97:48:67:78:AC:DE:57:2D:1B%3Bcom.app.scooterapp.activities
+
+    You can also add your credentials to an existing key, using these values:
+
+    Package name:
+    com.app.scooterapp.activities
+
+    SHA-1 certificate fingerprint:
+    BE:71:37:79:9F:33:D8:2B:EA:41:99:97:48:67:78:AC:DE:57:2D:1B
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <!--<string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBnxC-LAyBEDC3F4EZ7xs_4f5Pgr15WU68</string>-->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDAT1L0-w87XRmyZlMTYUH2_ip9hp87oEs</string>
+</resources>

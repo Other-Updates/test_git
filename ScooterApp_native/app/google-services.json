@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "325742840070",
+    "firebase_url": "https://scootero-291610.firebaseio.com",
+    "project_id": "scootero-291610",
+    "storage_bucket": "scootero-291610.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:325742840070:android:2cbaa1a432fe946128f687",
+        "android_client_info": {
+          "package_name": "com.app.scooteroapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "325742840070-1pgiv9v3o8bip2vtbetc58gtul60ac6g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwpXSYswuXaJyfDoBxXTxYeAYRwzZIjGE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "325742840070-1pgiv9v3o8bip2vtbetc58gtul60ac6g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
